@@ -1,24 +1,29 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f7f8f5;
-    color: #2d2d2d;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5dc;
     text-align: center;
 }
-h1, h2 {
-    color: #04724D; /* Green Islamic Color */
-}
-input {
-    padding: 10px;
-    margin: 5px;
-    width: 80%;
-    max-width: 300px;
+
+h1 {
+    color: #008000;
 }
 
-body.dark-mode {
-    background-color: #121212;
+button {
+    padding: 10px;
+    margin: 10px;
+    background-color: #008000;
     color: white;
+    border: none;
+    cursor: pointer;
 }
-.dark-mode button {
+
+button:hover {
+    background-color: #006400;
+}
+
+footer {
+    margin-top: 20px;
     background-color: #333;
     color: white;
+    padding: 10px;
 }

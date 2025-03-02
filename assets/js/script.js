@@ -1,23 +1,56 @@
+let goldItems = [];
+
+function addGoldItem() {
+    const goldList = document.getElementById("gold-list");
+    const newItem = document.createElement("div");
+    newItem.innerHTML = `
+        <input type="number" class="gold-weight" placeholder="Gold Weight (g)">
+        <select class="gold-carat">
+            <option value="24">24K</option>
+            <option value="22">22K</option>
+            <option value="18">18K</option>
+            <option value="14">14K</option>
+            <option value="10">10K</option>
+        </select>
+        <button onclick="removeGoldItem(this)">Remove</button>
+    `;
+    goldList.appendChild(newItem);
+}
+
+function removeGoldItem(button) {
+    button.parentElement.remove();
+}
+
 function calculateZakat() {
+    let totalGold = 0;
+    let goldWeights = document.querySelectorAll(".gold-weight");
+    let goldCarats = document.querySelectorAll(".gold-carat");
+
+    goldWeights.forEach((input, index) => {
+        let weight = parseFloat(input.value) || 0;
+        let carat = parseFloat(goldCarats[index].value) || 24;
+        totalGold += (weight * carat) / 24;  // Convert to pure gold
+    });
+
+    let silver = parseFloat(document.getElementById("silver").value) || 0;
     let cash = parseFloat(document.getElementById("cash").value) || 0;
-    let goldWeight = parseFloat(document.getElementById("gold").value) || 0;
-    let goldKarat = parseFloat(document.getElementById("gold-karat").value);
-    let exchangeRate = parseFloat(document.getElementById("exchange-rate").value) || 1;
 
-    // Convert gold weight based on purity
-    let pureGold = goldWeight * (goldKarat / 24); // Convert to 24K equivalent
+    // Nisab thresholds (gold 85g, silver 595g)
+    let goldNisab = 85;
+    let silverNisab = 595;
 
-    // Total wealth calculation
-    let totalWealth = cash + (pureGold * exchangeRate);
-
-    // Nisab threshold (85g gold or 595g silver, approximate value in USD)
-    let nisabThreshold = 500; // Placeholder, later will use real values
-
-    // Check if zakat is due
-    if (totalWealth >= nisabThreshold) {
-        let zakatAmount = totalWealth * 0.025; // 2.5% Zakat
-        document.getElementById("result").innerHTML = `Zakat Due: ${zakatAmount.toFixed(2)} in selected currency`;
-    } else {
-        document.getElementById("result").innerHTML = "No Zakat is due.";
+    let zakat = 0;
+    if (totalGold >= goldNisab || silver >= silverNisab || cash > 0) {
+        let totalWealth = totalGold + silver + cash;
+        zakat = totalWealth * 0.025;
     }
+
+    document.getElementById("zakat-result").innerText = zakat.toFixed(2);
+}
+
+function resetCalculator() {
+    document.getElementById("gold-list").innerHTML = "";
+    document.getElementById("silver").value = "";
+    document.getElementById("cash").value = "";
+    document.getElementById("zakat-result").innerText = "0";
 }
