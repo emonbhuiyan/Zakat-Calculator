@@ -1,0 +1,45 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #0a6847, #8dbe61);
+    color: white;
+    text-align: center;
+}
+
+.header {
+    padding: 20px;
+    background: #07452d;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.table {
+    background: white;
+    color: black;
+}
+
+.result {
+    margin-top: 20px;
+}
+
+.result h3 {
+    font-size: 22px;
+}
