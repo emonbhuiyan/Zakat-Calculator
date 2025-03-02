@@ -1,56 +1,99 @@
-let goldItems = [];
+document.addEventListener("DOMContentLoaded", function () {
+    const typeSelect = document.getElementById("type");
+    const amountField = document.getElementById("amountField");
+    const amountInput = document.getElementById("amount");
+    const caratField = document.getElementById("caratField");
+    const caratSelect = document.getElementById("carat");
+    const currencyField = document.getElementById("currencyField");
+    const currencySelect = document.getElementById("currency");
+    const addWealthBtn = document.getElementById("addWealth");
+    const cashList = document.getElementById("cashList").querySelector("tbody");
+    const goldSilverList = document.getElementById("goldSilverList").querySelector("tbody");
 
-function addGoldItem() {
-    const goldList = document.getElementById("gold-list");
-    const newItem = document.createElement("div");
-    newItem.innerHTML = `
-        <input type="number" class="gold-weight" placeholder="Gold Weight (g)">
-        <select class="gold-carat">
-            <option value="24">24K</option>
-            <option value="22">22K</option>
-            <option value="18">18K</option>
-            <option value="14">14K</option>
-            <option value="10">10K</option>
-        </select>
-        <button onclick="removeGoldItem(this)">Remove</button>
-    `;
-    goldList.appendChild(newItem);
-}
+    typeSelect.addEventListener("change", function () {
+        amountField.style.display = "block";
+        currencyField.style.display = "block";
+        addWealthBtn.style.display = "block";
 
-function removeGoldItem(button) {
-    button.parentElement.remove();
-}
-
-function calculateZakat() {
-    let totalGold = 0;
-    let goldWeights = document.querySelectorAll(".gold-weight");
-    let goldCarats = document.querySelectorAll(".gold-carat");
-
-    goldWeights.forEach((input, index) => {
-        let weight = parseFloat(input.value) || 0;
-        let carat = parseFloat(goldCarats[index].value) || 24;
-        totalGold += (weight * carat) / 24;  // Convert to pure gold
+        if (this.value === "gold" || this.value === "silver") {
+            caratField.style.display = (this.value === "gold") ? "block" : "none";
+        } else {
+            caratField.style.display = "none";
+        }
     });
 
-    let silver = parseFloat(document.getElementById("silver").value) || 0;
-    let cash = parseFloat(document.getElementById("cash").value) || 0;
+    addWealthBtn.addEventListener("click", function () {
+        const type = typeSelect.value;
+        const amount = parseFloat(amountInput.value) || 0;
+        const currency = currencySelect.value;
+        let carat = caratSelect.value;
+        let pureGold = amount;
 
-    // Nisab thresholds (gold 85g, silver 595g)
-    let goldNisab = 85;
-    let silverNisab = 595;
+        if (!type || amount <= 0) {
+            alert("Please enter a valid amount.");
+            return;
+        }
 
-    let zakat = 0;
-    if (totalGold >= goldNisab || silver >= silverNisab || cash > 0) {
-        let totalWealth = totalGold + silver + cash;
-        zakat = totalWealth * 0.025;
+        if (type === "gold") {
+            const purity = parseFloat(carat) / 24;
+            pureGold = (amount * purity).toFixed(2);
+        }
+
+        if (type === "gold" || type === "silver") {
+            addGoldSilverRow(type, amount, carat, pureGold);
+        } else {
+            addCashRow(type, amount, currency);
+        }
+
+        // Reset fields
+        amountInput.value = "";
+        typeSelect.value = "";
+        caratField.style.display = "none";
+        amountField.style.display = "none";
+        currencyField.style.display = "none";
+        addWealthBtn.style.display = "none";
+    });
+
+    function addCashRow(type, amount, currency) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${type}</td>
+            <td>${amount}</td>
+            <td>${currency}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove</button></td>
+        `;
+        cashList.appendChild(row);
     }
 
-    document.getElementById("zakat-result").innerText = zakat.toFixed(2);
-}
+    function addGoldSilverRow(type, amount, carat, pureGold) {
+        const zakatableGold = (pureGold * 0.025).toFixed(2); // 2.5% for Zakat
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${type}</td>
+            <td>${amount}g</td>
+            <td>${carat}K</td>
+            <td>${pureGold}g</td>
+            <td>${zakatableGold}g</td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove</button></td>
+        `;
+        goldSilverList.appendChild(row);
+    }
 
-function resetCalculator() {
-    document.getElementById("gold-list").innerHTML = "";
-    document.getElementById("silver").value = "";
-    document.getElementById("cash").value = "";
-    document.getElementById("zakat-result").innerText = "0";
-}
+    window.removeRow = function (button) {
+        button.closest("tr").remove();
+    };
+
+    document.getElementById("calculateZakat").addEventListener("click", function () {
+        let totalZakat = 0;
+
+        document.querySelectorAll("#goldSilverList tbody tr").forEach(row => {
+            totalZakat += parseFloat(row.children[4].innerText) || 0;
+        });
+
+        document.querySelectorAll("#cashList tbody tr").forEach(row => {
+            totalZakat += parseFloat(row.children[1].innerText) * 0.025; // 2.5% on cash
+        });
+
+        document.getElementById("result").innerHTML = `<h2>Zakat Due: ${totalZakat.toFixed(2)}</h2>`;
+    });
+});
