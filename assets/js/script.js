@@ -1,47 +1,23 @@
-let goldItems = [];
+function calculateZakat() {
+    let cash = parseFloat(document.getElementById("cash").value) || 0;
+    let goldWeight = parseFloat(document.getElementById("gold").value) || 0;
+    let goldKarat = parseFloat(document.getElementById("gold-karat").value);
+    let exchangeRate = parseFloat(document.getElementById("exchange-rate").value) || 1;
 
-function addGoldItem() {
-    let weight = parseFloat(document.getElementById("weight").value);
-    let carat = parseFloat(document.getElementById("carat").value);
-    
-    if (isNaN(weight) || weight <= 0) {
-        alert("Please enter a valid weight.");
-        return;
+    // Convert gold weight based on purity
+    let pureGold = goldWeight * (goldKarat / 24); // Convert to 24K equivalent
+
+    // Total wealth calculation
+    let totalWealth = cash + (pureGold * exchangeRate);
+
+    // Nisab threshold (85g gold or 595g silver, approximate value in USD)
+    let nisabThreshold = 500; // Placeholder, later will use real values
+
+    // Check if zakat is due
+    if (totalWealth >= nisabThreshold) {
+        let zakatAmount = totalWealth * 0.025; // 2.5% Zakat
+        document.getElementById("result").innerHTML = `Zakat Due: ${zakatAmount.toFixed(2)} in selected currency`;
+    } else {
+        document.getElementById("result").innerHTML = "No Zakat is due.";
     }
-
-    let pureGold = (weight * carat) / 24;
-    goldItems.push({ weight, carat, pureGold });
-
-    updateTable();
-    document.getElementById("weight").value = "";
-}
-
-function updateTable() {
-    let tableBody = document.getElementById("goldTableBody");
-    tableBody.innerHTML = "";
-    
-    let totalPureGold = 0;
-    goldItems.forEach((item, index) => {
-        totalPureGold += item.pureGold;
-        tableBody.innerHTML += `
-            <tr>
-                <td>${item.weight}g</td>
-                <td>${item.carat}K</td>
-                <td>${item.pureGold.toFixed(2)}g</td>
-                <td><button class="btn btn-danger btn-sm" onclick="deleteItem(${index})"><i class="fas fa-trash"></i></button></td>
-            </tr>
-        `;
-    });
-
-    document.getElementById("totalPureGold").textContent = totalPureGold.toFixed(2);
-}
-
-function deleteItem(index) {
-    goldItems.splice(index, 1);
-    updateTable();
-}
-
-function resetCalculator() {
-    goldItems = [];
-    updateTable();
 }

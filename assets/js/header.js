@@ -1,9 +1,9 @@
-// assets/js/header.js
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function() {
     fetch("components/header.html")
         .then(response => response.text())
-        .then(data => {
-            document.getElementById("header-container").innerHTML = data;
-        })
-        .catch(error => console.error("Error loading header:", error));
+        .then(data => document.getElementById("header").innerHTML = data);
+    
+    fetch("components/footer.html")
+        .then(response => response.text())
+        .then(data => document.getElementById("footer").innerHTML = data);
 });
