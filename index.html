@@ -15,15 +15,11 @@
             padding: 20px;
             text-align: center;
         }
-        .result-table {
+        .result-section {
             margin-top: 20px;
         }
-        .currency-input {
-            display: inline-flex;
-            align-items: center;
-        }
-        .currency-input select {
-            margin-right: 10px;
+        .currency-field {
+            display: none;
         }
         @media print {
             .no-print {
@@ -35,80 +31,112 @@
 <body>
     <div class="container">
         <div class="header">
-            <h2><i class="fas fa-hand-holding-usd"></i> Zakat Calculator</h2>
+            <h1><i class="fas fa-hand-holding-usd"></i> Zakat Calculator</h1>
         </div>
 
+        <h2>Cash, Bank Savings, Investments</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Amount</th>
+                    <th>Currency</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Cash</td>
+                    <td><input type="number" class="form-control" id="cashAmount" placeholder="Enter amount"></td>
+                    <td><select class="form-control" id="cashCurrency">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="SAR">SAR</option>
+                        <option value="EGP">EGP</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Bank Savings</td>
+                    <td><input type="number" class="form-control" id="bankAmount" placeholder="Enter amount"></td>
+                    <td><select class="form-control" id="bankCurrency">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="SAR">SAR</option>
+                        <option value="EGP">EGP</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Investments</td>
+                    <td><input type="number" class="form-control" id="investmentAmount" placeholder="Enter amount"></td>
+                    <td><select class="form-control" id="investmentCurrency">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="SAR">SAR</option>
+                        <option value="EGP">EGP</option>
+                    </select></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Gold and Silver</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Weight (grams)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Gold</td>
+                    <td>
+                        <select class="form-control" id="goldCarat">
+                            <option value="24">24 Carat (99.9%)</option>
+                            <option value="22">22 Carat (91.6%)</option>
+                            <option value="21">21 Carat (87.5%)</option>
+                            <option value="18">18 Carat (75%)</option>
+                            <option value="10">10 Carat (41.7%)</option>
+                        </select>
+                        <input type="number" class="form-control" id="goldWeight" placeholder="Enter weight">
+                        <div id="pureGoldWeightDisplay"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Silver</td>
+                    <td><input type="number" class="form-control" id="silverWeight" placeholder="Enter weight">
+                        <div id="pureSilverWeightDisplay"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
         <div class="form-group">
-            <label for="goldCarat">Gold Carat:</label>
-            <select class="form-control" id="goldCarat">
-                <option value="24">24 Carat (99.9%)</option>
-                <option value="22">22 Carat (91.6%)</option>
-                <option value="21">21 Carat (87.5%)</option>
-                <option value="18">18 Carat (75%)</option>
+            <label for="mainCurrency">Main Currency for Zakat Calculation:</label>
+            <select class="form-control" id="mainCurrency">
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="SAR">SAR</option>
+                <option value="EGP">EGP</option>
             </select>
         </div>
-        <div class="form-group">
-            <label for="goldWeight">Weight of Gold (grams):</label>
-            <input type="number" class="form-control" id="goldWeight" placeholder="Enter weight">
-        </div>
-        <div class="form-group">
-            <label for="silverWeight">Weight of Silver (grams):</label>
-            <input type="number" class="form-control" id="silverWeight" placeholder="Enter weight">
-        </div>
-        <div class="form-group">
-            <label for="cashAmount">Cash:</label>
-            <div class="currency-input">
-                <select class="form-control" id="cashCurrency">
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                    <option value="SAR">SAR</option>
-                    <option value="EGP">EGP</option>
-                </select>
-                <input type="number" class="form-control" id="cashAmount" placeholder="Enter amount">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="bankAmount">Bank Savings:</label>
-            <div class="currency-input">
-                <select class="form-control" id="bankCurrency">
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                    <option value="SAR">SAR</option>
-                    <option value="EGP">EGP</option>
-                </select>
-                <input type="number" class="form-control" id="bankAmount" placeholder="Enter amount">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="investmentAmount">Investments:</label>
-            <div class="currency-input">
-                <select class="form-control" id="investmentCurrency">
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                    <option value="SAR">SAR</option>
-                    <option value="EGP">EGP</option>
-                </select>
-                <input type="number" class="form-control" id="investmentAmount" placeholder="Enter amount">
-            </div>
-        </div>
 
-        <button class="btn btn-primary" onclick="calculateZakat()">Calculate Zakat</button>
+        <button class="btn btn-primary" onclick="calculateZakat()">Calculate</button>
         <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
-        <button class="btn btn-info" onclick="printPage()">Print</button>
+        <button class="btn btn-info no-print" onclick="printResult()">Print</button>
 
-        <div id="result" class="result-table"></div>
+        <div class="result-section">
+            <div id="result"></div>
+            <p>Please find the current market rates for gold and silver to calculate the actual Zakat amount.</p>
+        </div>
 
         <div class="footer">
-            <p>&copy; 2024 Zakat Calculator <i class="fas fa-mosque"></i></p>
+            <p><i class="fas fa-copyright"></i> 2024 Zakat Calculator</p>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
