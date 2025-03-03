@@ -115,11 +115,15 @@ async function calculateZakat() {
         <div class="alert alert-success">
             <h4><i class="fas fa-calculator"></i> Zakat Calculation</h4>
             <p><i class="fas fa-wallet"></i> Total Cash/Assets: <strong>${totalCash.toFixed(2)} ${mainCurrency}</strong></p>
-            <p><i class="fas fa-money-bill-wave"></i> Cash Zakat: <strong>${totalZakatCash.toFixed(2)} ${mainCurrency}</strong></p>
-            <p class="bg-warning"><i class="fas fa-balance-scale"></i> Total Pure Gold Weight: <strong>${totalPureGoldWeight.toFixed(2)}g</strong></p>
-            <p class="bg-warning"><i class="fas fa-gem"></i> Zakatable Gold Weight: <strong>${totalZakatableGoldWeight.toFixed(2)}g</strong></p>
-            <p class="bg-secondary text-white"><i class="fas fa-balance-scale-right"></i> Total Silver Weight: <strong>${totalSilverWeight.toFixed(2)}g</strong></p>
-            <p class="bg-secondary text-white"><i class="fas fa-coins"></i> Zakatable Silver Weight: <strong>${totalZakatableSilverWeight.toFixed(2)}g</strong></p>
+            <p><i class="fas fa-money-bill-wave"></i> Cash Zakat 2.5%: <strong>${totalZakatCash.toFixed(2)} ${mainCurrency}</strong></p>
+            <div class="bg-warning mt-3">
+                <p><i class="fas fa-balance-scale"></i> Total Pure Gold Weight: <strong>${totalPureGoldWeight.toFixed(2)}g</strong></p>
+                <p><i class="fas fa-gem"></i> Zakatable Gold Weight: <strong>${totalZakatableGoldWeight.toFixed(2)}g</strong></p>
+            </div>
+            <div class="bg-secondary text-white mt-3">
+                <p><i class="fas fa-balance-scale-right"></i> Total Silver Weight: <strong>${totalSilverWeight.toFixed(2)}g</strong></p>
+                <p><i class="fas fa-coins"></i> Zakatable Silver Weight: <strong>${totalZakatableSilverWeight.toFixed(2)}g</strong></p>
+            </div>
             <div class="alert alert-warning mt-3">
                 <i class="fas fa-exclamation-triangle"></i> <strong>Important:</strong> Please check the latest gold and silver prices from the market before finalizing your Zakat calculation.
             </div>
