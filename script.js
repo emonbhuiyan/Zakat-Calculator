@@ -1,166 +1,178 @@
-let assetEntries = [];
-let goldEntries = [];
-let silverEntries = [];
+const API_KEY = "67ca1d11b03dff9c3d66179a";
+const API_URL = `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/`;
 
+let assets = [];
+let goldItems = [];
+let silverItems = [];
+let exchangeRates = {};
+
+// Fetch exchange rates
+async function fetchExchangeRates(baseCurrency) {
+    try {
+        const response = await fetch(API_URL + baseCurrency);
+        const data = await response.json();
+        exchangeRates = data.conversion_rates;
+    } catch (error) {
+        console.error("Error fetching exchange rates:", error);
+    }
+}
+
+// Add an asset (cash, bank, investment)
 function addAsset() {
-    let type = document.getElementById("assetType").value;
-    let amount = parseFloat(document.getElementById("assetAmount").value) || 0;
-    let currency = document.getElementById("assetCurrency").value;
+    const type = document.getElementById("assetType").value;
+    const amount = parseFloat(document.getElementById("assetAmount").value);
+    const currency = document.getElementById("assetCurrency").value;
 
-    assetEntries.push({ type, amount, currency });
-    displayAssets();
+    if (amount > 0) {
+        assets.push({ type, amount, currency });
 
-    document.getElementById("assetAmount").value = "";
+        let row = `<tr>
+            <td>${type}</td>
+            <td>${amount.toFixed(2)}</td>
+            <td>${currency}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeAsset(${assets.length - 1})">X</button></td>
+        </tr>`;
+
+        document.querySelector("#assetList tbody").innerHTML += row;
+    }
 }
 
-function displayAssets() {
-    let tableBody = document.getElementById("assetList").getElementsByTagName("tbody")[0];
-    tableBody.innerHTML = "";
-
-    assetEntries.forEach((entry, index) => {
-        let row = tableBody.insertRow();
-        let cell1 = row.insertCell(0);
-        let cell2 = row.insertCell(1);
-        let cell3 = row.insertCell(2);
-        let cell4 = row.insertCell(3);
-
-        cell1.innerHTML = entry.type;
-        cell2.innerHTML = entry.amount.toFixed(2);
-        cell3.innerHTML = entry.currency;
-        cell4.innerHTML = `<button class="btn btn-danger btn-sm" onclick="removeAsset(${index})">Remove</button>`;
-    });
-}
-
+// Remove asset
 function removeAsset(index) {
-    assetEntries.splice(index, 1);
-    displayAssets();
+    assets.splice(index, 1);
+    document.querySelector("#assetList tbody").innerHTML = "";
+    assets.forEach((item, i) => {
+        document.querySelector("#assetList tbody").innerHTML += `<tr>
+            <td>${item.type}</td>
+            <td>${item.amount.toFixed(2)}</td>
+            <td>${item.currency}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeAsset(${i})">X</button></td>
+        </tr>`;
+    });
 }
 
+// Add gold
 function addGold() {
-    let carat = parseInt(document.getElementById("goldCarat").value);
-    let weight = parseFloat(document.getElementById("goldWeight").value) || 0;
-    goldEntries.push({ carat, weight });
-    displayGold();
-    document.getElementById("goldWeight").value = "";
+    const carat = parseInt(document.getElementById("goldCarat").value);
+    const weight = parseFloat(document.getElementById("goldWeight").value);
+
+    if (weight > 0) {
+        const zakatableGold = weight * (carat / 24);
+        goldItems.push({ carat, weight, zakatableGold });
+
+        let row = `<tr>
+            <td>${carat}K</td>
+            <td>${weight.toFixed(2)}</td>
+            <td>${zakatableGold.toFixed(2)}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeGold(${goldItems.length - 1})">X</button></td>
+        </tr>`;
+
+        document.querySelector("#goldList tbody").innerHTML += row;
+    }
 }
 
-function displayGold() {
-    let tableBody = document.getElementById("goldList").getElementsByTagName("tbody")[0];
-    tableBody.innerHTML = "";
-
-    goldEntries.forEach((entry, index) => {
-        let row = tableBody.insertRow();
-        let cell1 = row.insertCell(0);
-        let cell2 = row.insertCell(1);
-        let cell3 = row.insertCell(2);
-
-        cell1.innerHTML = entry.carat;
-        cell2.innerHTML = entry.weight.toFixed(2);
-        cell3.innerHTML = `<button class="btn btn-danger btn-sm" onclick="removeGold(${index})">Remove</button>`;
-    });
-}
-
+// Remove gold
 function removeGold(index) {
-    goldEntries.splice(index, 1);
-    displayGold();
+    goldItems.splice(index, 1);
+    document.querySelector("#goldList tbody").innerHTML = "";
+    goldItems.forEach((item, i) => {
+        document.querySelector("#goldList tbody").innerHTML += `<tr>
+            <td>${item.carat}K</td>
+            <td>${item.weight.toFixed(2)}</td>
+            <td>${item.zakatableGold.toFixed(2)}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeGold(${i})">X</button></td>
+        </tr>`;
+    });
 }
 
+// Add silver
 function addSilver() {
-    let weight = parseFloat(document.getElementById("silverWeight").value) || 0;
-    silverEntries.push({ weight });
-    displaySilver();
-    document.getElementById("silverWeight").value = "";
+    const weight = parseFloat(document.getElementById("silverWeight").value);
+
+    if (weight > 0) {
+        silverItems.push(weight);
+
+        let row = `<tr>
+            <td>${weight.toFixed(2)}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeSilver(${silverItems.length - 1})">X</button></td>
+        </tr>`;
+
+        document.querySelector("#silverList tbody").innerHTML += row;
+    }
 }
 
-function displaySilver() {
-    let tableBody = document.getElementById("silverList").getElementsByTagName("tbody")[0];
-    tableBody.innerHTML = "";
-
-    silverEntries.forEach((entry, index) => {
-        let row = tableBody.insertRow();
-        let cell1 = row.insertCell(0);
-        let cell2 = row.insertCell(1);
-
-        cell1.innerHTML = entry.weight.toFixed(2);
-        cell2.innerHTML = `<button class="btn btn-danger btn-sm" onclick="removeSilver(${index})">Remove</button>`;
-    });
-}
-
+// Remove silver
 function removeSilver(index) {
-    silverEntries.splice(index, 1);
-    displaySilver();
+    silverItems.splice(index, 1);
+    document.querySelector("#silverList tbody").innerHTML = "";
+    silverItems.forEach((weight, i) => {
+        document.querySelector("#silverList tbody").innerHTML += `<tr>
+            <td>${weight.toFixed(2)}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeSilver(${i})">X</button></td>
+        </tr>`;
+    });
 }
 
-function calculateZakat() {
-    let mainCurrency = document.getElementById("mainCurrency").value;
-    let totalCash = 0;
-    let totalPureGold = 0;
-    let totalSilver = 0;
+// Calculate Zakat
+async function calculateZakat() {
+    const mainCurrency = document.getElementById("mainCurrency").value;
+    await fetchExchangeRates(mainCurrency);
 
-    assetEntries.forEach(entry => {
-        totalCash += entry.amount;
-    });
+    let totalWealth = 0;
 
-    goldEntries.forEach(gold => {
-        totalPureGold += gold.weight * (gold.carat / 24);
-    });
-
-    silverEntries.forEach(silver => {
-        totalSilver += silver.weight;
-    });
-
-    const nisabGold = 87.48;
-    const nisabSilver = 612.36;
-
-    let zakatAmount = 0;
-
-    if (totalPureGold >= nisabGold) {
-        zakatAmount += totalPureGold * 0.025;
+    // Convert assets to main currency
+    for (let asset of assets) {
+        const rate = exchangeRates[asset.currency] || 1;
+        totalWealth += asset.amount / rate;
     }
 
-    if (totalSilver >= nisabSilver) {
-        zakatAmount += totalSilver * 0.025;
-    }
+    // Convert gold & silver to main currency
+    const goldTotal = goldItems.reduce((sum, item) => sum + item.zakatableGold, 0);
+    const silverTotal = silverItems.reduce((sum, item) => sum + item, 0);
 
-    if (totalCash > 0) {
-        zakatAmount += totalCash * 0.025;
-    }
+    let goldInMainCurrency = 0;
+    let silverInMainCurrency = 0;
 
-    let resultText = `<table class="table"><thead><tr><th>Asset Type</th><th>Amount</th><th>Currency</th><th>Zakat (2.5%)</th></tr></thead><tbody>`;
-
-    assetEntries.forEach(entry => {
-        let zakat = (entry.amount * 0.025).toFixed(2);
-        resultText += `<tr><td>${entry.type}</td><td>${entry.amount.toFixed(2)}</td><td>${entry.currency}</td><td>${zakat}</td></tr>`;
-    });
-
-    let goldZakat = (totalPureGold * 0.025).toFixed(2);
-    let silverZakat = (totalSilver * 0.025).toFixed(2);
-
-    resultText += `<tr><td>Gold</td><td>${totalPureGold.toFixed(2)} grams</td><td>-</td><td>${goldZakat} grams</td></tr>`;
-    resultText += `<tr><td>Silver</td><td>${totalSilver.toFixed(2)} grams</td><td>-</td><td>${silverZakat} grams</td></tr>`;
-    resultText += `<tr><td>Total</td><td>-</td><td>${mainCurrency}</td><td>${zakatAmount.toFixed(2)}</td></tr>`;
-    resultText += `</tbody></table>`;
-
-    document.getElementById("result").innerHTML = resultText;
-
-    if (totalPureGold >= nisabGold || totalSilver >= nisabSilver) {
-        document.getElementById("goldSilverRateMessage").style.display = "block";
+    if (exchangeRates["XAU"]) {
+        goldInMainCurrency = goldTotal * exchangeRates["XAU"];
     } else {
-        document.getElementById("goldSilverRateMessage").style.display = "none";
+        document.getElementById("goldSilverRateMessage").style.display = "block";
     }
+
+    if (exchangeRates["XAG"]) {
+        silverInMainCurrency = silverTotal * exchangeRates["XAG"];
+    } else {
+        document.getElementById("goldSilverRateMessage").style.display = "block";
+    }
+
+    totalWealth += goldInMainCurrency + silverInMainCurrency;
+
+    // Nisab calculation
+    let nisabGoldValue = 87.48 * (exchangeRates["XAU"] || 0);
+    let nisabSilverValue = 612.36 * (exchangeRates["XAG"] || 0);
+
+    let nisab = Math.min(nisabGoldValue, nisabSilverValue);
+    let zakatDue = totalWealth > nisab ? (totalWealth * 0.025) : 0;
+
+    document.getElementById("result").innerHTML = `
+        <div class="alert alert-success">
+            <h4>Total Wealth: ${totalWealth.toFixed(2)} ${mainCurrency}</h4>
+            <h4>Zakat Due: ${zakatDue.toFixed(2)} ${mainCurrency}</h4>
+        </div>`;
 }
 
+// Reset
 function resetForm() {
-    assetEntries = [];
-    goldEntries = [];
-    silverEntries = [];
-    displayAssets();
-    displayGold();
-    displaySilver();
+    assets = [];
+    goldItems = [];
+    silverItems = [];
+    document.querySelector("#assetList tbody").innerHTML = "";
+    document.querySelector("#goldList tbody").innerHTML = "";
+    document.querySelector("#silverList tbody").innerHTML = "";
     document.getElementById("result").innerHTML = "";
-    document.getElementById("goldSilverRateMessage").style.display = "none";
 }
 
+// Print
 function printResult() {
     window.print();
 }

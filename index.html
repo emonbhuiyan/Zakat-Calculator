@@ -7,22 +7,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
-        body {
-            font-family: sans-serif;
-        }
-        .header, .footer {
-            background-color: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-        }
-        .result-section {
-            margin-top: 20px;
-        }
-        @media print {
-            .no-print {
-                display: none;
-            }
-        }
+        body { font-family: sans-serif; }
+        .header, .footer { background-color: #f8f9fa; padding: 20px; text-align: center; }
+        .result-section { margin-top: 20px; }
+        @media print { .no-print { display: none; } }
     </style>
 </head>
 <body>
@@ -86,7 +74,7 @@
                 </select>
             </div>
             <div class="col">
-                <input type="number" class="form-control" id="goldWeight" placeholder="Enter weight">
+                <input type="number" class="form-control" id="goldWeight" placeholder="Enter weight (grams)">
             </div>
             <div class="col">
                 <button class="btn btn-success" onclick="addGold()">Add Gold</button>
@@ -97,6 +85,7 @@
                 <tr>
                     <th>Carat</th>
                     <th>Weight (grams)</th>
+                    <th>Zakatable Gold</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -106,7 +95,7 @@
         <h2>Silver</h2>
         <div class="form-row">
             <div class="col">
-                <input type="number" class="form-control" id="silverWeight" placeholder="Enter weight">
+                <input type="number" class="form-control" id="silverWeight" placeholder="Enter weight (grams)">
             </div>
             <div class="col">
                 <button class="btn btn-success" onclick="addSilver()">Add Silver</button>
@@ -145,7 +134,7 @@
         <div class="result-section">
             <div id="result"></div>
             <div class="alert alert-warning">Nisab Gold: 87.48 grams, Nisab Silver: 612.36 grams.</div>
-            <p id="goldSilverRateMessage" style="display:none;">Please find the current market rates for gold and silver to calculate the actual Zakat amount of gold and silver.</p>
+            <p id="goldSilverRateMessage" style="display:none;">Please check current market rates for gold and silver.</p>
         </div>
 
         <div class="footer">
