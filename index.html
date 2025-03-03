@@ -7,10 +7,32 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
-        body { font-family: sans-serif; }
-        .header, .footer { background-color: #f8f9fa; padding: 20px; text-align: center; }
-        .result-section { margin-top: 20px; }
-        @media print { .no-print { display: none; } }
+        body {
+            font-family: sans-serif;
+        }
+        .header, .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+        .result-section {
+            margin-top: 20px;
+        }
+        .highlight {
+            background-color: #ffffcc;
+            font-weight: bold;
+            padding: 10px;
+            border: 2px solid #ffc107;
+        }
+        .table thead {
+            background-color: #007bff;
+            color: white;
+        }
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -18,49 +40,6 @@
         <div class="header">
             <h1><i class="fas fa-hand-holding-usd"></i> Zakat Calculator</h1>
         </div>
-
-        <h2>Cash, Bank Savings, Investments</h2>
-        <div class="form-row">
-            <div class="col">
-                <select class="form-control" id="assetType">
-                    <option value="cash">Cash</option>
-                    <option value="bank">Bank Savings</option>
-                    <option value="investment">Investments</option>
-                </select>
-            </div>
-            <div class="col">
-                <input type="number" class="form-control" id="assetAmount" placeholder="Enter amount">
-            </div>
-            <div class="col">
-                <select class="form-control" id="assetCurrency">
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                    <option value="SAR">SAR</option>
-                    <option value="EGP">EGP</option>
-                    <option value="BDT">BDT</option>
-                    <option value="INR">INR</option>
-                    <option value="PKR">PKR</option>
-                    <option value="IDR">IDR</option>
-                    <option value="TRY">TRY</option>
-                </select>
-            </div>
-            <div class="col">
-                <button class="btn btn-success" onclick="addAsset()">Add to List</button>
-            </div>
-        </div>
-
-        <table class="table" id="assetList">
-            <thead>
-                <tr>
-                    <th>Asset Type</th>
-                    <th>Amount</th>
-                    <th>Currency</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
 
         <h2>Gold</h2>
         <div class="form-row">
@@ -70,75 +49,45 @@
                     <option value="22">22 Carat (91.6%)</option>
                     <option value="21">21 Carat (87.5%)</option>
                     <option value="18">18 Carat (75%)</option>
+                    <option value="14">14 Carat (58.5%)</option>
                     <option value="10">10 Carat (41.7%)</option>
                 </select>
             </div>
             <div class="col">
-                <input type="number" class="form-control" id="goldWeight" placeholder="Enter weight (grams)">
+                <input type="number" class="form-control" id="goldWeight" placeholder="Enter weight in grams">
             </div>
             <div class="col">
                 <button class="btn btn-success" onclick="addGold()">Add Gold</button>
             </div>
         </div>
-        <table class="table" id="goldList">
-            <thead>
-                <tr>
-                    <th>Carat</th>
-                    <th>Weight (grams)</th>
-                    <th>Zakatable Gold</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
 
         <h2>Silver</h2>
         <div class="form-row">
             <div class="col">
-                <input type="number" class="form-control" id="silverWeight" placeholder="Enter weight (grams)">
+                <input type="number" class="form-control" id="silverWeight" placeholder="Enter weight in grams">
             </div>
             <div class="col">
                 <button class="btn btn-success" onclick="addSilver()">Add Silver</button>
             </div>
         </div>
-        <table class="table" id="silverList">
-            <thead>
-                <tr>
-                    <th>Weight (grams)</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
 
-        <div class="form-group">
-            <label for="mainCurrency">Main Currency for Zakat Calculation:</label>
-            <select class="form-control" id="mainCurrency">
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="SAR">SAR</option>
-                <option value="EGP">EGP</option>
-                <option value="BDT">BDT</option>
-                <option value="INR">INR</option>
-                <option value="PKR">PKR</option>
-                <option value="IDR">IDR</option>
-                <option value="TRY">TRY</option>
-            </select>
-        </div>
+        <h2>Select Main Currency</h2>
+        <select class="form-control" id="mainCurrency">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="SAR">SAR</option>
+            <option value="EGP">EGP</option>
+            <option value="BDT">BDT</option>
+        </select>
 
-        <button class="btn btn-primary" onclick="calculateZakat()">Calculate</button>
-        <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
-        <button class="btn btn-info no-print" onclick="printResult()">Print</button>
+        <button class="btn btn-primary mt-3" onclick="calculateZakat()">Calculate</button>
+        <button class="btn btn-secondary mt-3" onclick="resetForm()">Reset</button>
+        <button class="btn btn-info mt-3 no-print" onclick="printResult()">Print</button>
 
         <div class="result-section">
             <div id="result"></div>
-            <div class="alert alert-warning">Nisab Gold: 87.48 grams, Nisab Silver: 612.36 grams.</div>
-            <p id="goldSilverRateMessage" style="display:none;">Please check current market rates for gold and silver.</p>
-        </div>
-
-        <div class="footer">
-            <p><i class="fas fa-copyright"></i> 2024 Zakat Calculator</p>
+            <div id="marketRates" class="highlight mt-3"></div>
         </div>
     </div>
 
