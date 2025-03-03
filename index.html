@@ -6,80 +6,18 @@
     <title>Zakat Calculator</title>
     <script src="https://kit.fontawesome.com/YOUR-FONTAWESOME-KIT.js" crossorigin="anonymous"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            text-align: center;
-            margin: 20px;
-        }
-        h1, h2 {
-            color: #155724;
-        }
-        section {
-            background: white;
-            padding: 15px;
-            margin: 10px auto;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-        }
-        label {
-            font-weight: bold;
-            display: block;
-            margin: 5px 0;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .btn {
-            background-color: #28a745;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #218838;
-        }
-        .btn i {
-            margin-right: 5px;
-        }
-        #gold-list, #cash-list {
-            text-align: left;
-            margin-top: 10px;
-        }
-        .list-item {
-            background: #e9ecef;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .delete-btn {
-            background: red;
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 3px;
-        }
+        /* Your original styles */
     </style>
 </head>
 <body>
 
     <h1>Zakat Calculator</h1>
 
-    <section id="gold-section">
-        <h2><i class="fas fa-ring"></i> Gold</h2>
-        <label for="gold-weight">Gold Weight (grams):</label>
-        <input type="number" id="gold-weight" min="0">
-        <label for="gold-carat">Carat:</label>
+    <section>
+        <h2>Gold</h2>
+        <label>Gold Weight (grams):</label>
+        <input type="number" id="gold-weight">
+        <label>Carat:</label>
         <select id="gold-carat">
             <option value="24">24K (100%)</option>
             <option value="22">22K (91.6%)</option>
@@ -88,16 +26,16 @@
             <option value="14">14K (58.3%)</option>
             <option value="10">10K (41.7%)</option>
         </select>
-        <button id="add-gold" class="btn"><i class="fas fa-plus"></i> Add</button>
+        <button id="add-gold">Add</button>
     </section>
 
     <div id="gold-list"></div>
 
-    <section id="cash-section">
-        <h2><i class="fas fa-coins"></i> Cash & Savings</h2>
-        <label for="cash-amount">Amount:</label>
-        <input type="number" id="cash-amount" min="0">
-        <label for="currency">Currency:</label>
+    <section>
+        <h2>Cash & Savings</h2>
+        <label>Amount:</label>
+        <input type="number" id="cash-amount">
+        <label>Currency:</label>
         <select id="currency">
             <option value="USD">USD - United States Dollar</option>
             <option value="EGP">EGP - Egyptian Pound</option>
@@ -107,21 +45,19 @@
             <option value="GBP">GBP - British Pound</option>
             <option value="EUR">EUR - Euro</option>
         </select>
-        <button id="add-cash" class="btn"><i class="fas fa-plus"></i> Add</button>
+        <button id="add-cash">Add</button>
     </section>
 
     <div id="cash-list"></div>
 
-    <section id="results">
-        <h2><i class="fas fa-calculator"></i> Results</h2>
+    <section>
+        <h2>Results</h2>
         <p>Zakatable Gold: <span id="zakatable-gold">0</span> grams</p>
         <p>Zakat Due: <span id="zakat-due">0</span></p>
-        <button id="reset" class="btn"><i class="fas fa-redo"></i> Reset</button>
+        <button id="reset">Reset</button>
     </section>
 
     <script>
-        const goldList = document.getElementById("gold-list");
-        const cashList = document.getElementById("cash-list");
         let zakatableGold = 0;
 
         document.getElementById("add-gold").addEventListener("click", function() {
@@ -131,7 +67,7 @@
                 const pureGold = weight * (carat / 24);
                 zakatableGold += pureGold;
                 updateResults();
-                addListItem(goldList, `${weight}g ${carat}K (Pure: ${pureGold.toFixed(2)}g)`);
+                addListItem("gold-list", `${weight}g ${carat}K (Pure: ${pureGold.toFixed(2)}g)`);
             }
         });
 
@@ -139,14 +75,14 @@
             const amount = parseFloat(document.getElementById("cash-amount").value);
             const currency = document.getElementById("currency").value;
             if (amount > 0) {
-                addListItem(cashList, `${amount} ${currency}`);
+                addListItem("cash-list", `${amount} ${currency}`);
             }
         });
 
-        function addListItem(list, text) {
+        function addListItem(listId, text) {
+            const list = document.getElementById(listId);
             const item = document.createElement("div");
-            item.classList.add("list-item");
-            item.innerHTML = `<span>${text}</span> <button class="delete-btn"><i class="fas fa-trash"></i></button>`;
+            item.innerHTML = `<span>${text}</span> <button class="delete-btn">Delete</button>`;
             list.appendChild(item);
             item.querySelector(".delete-btn").addEventListener("click", function() {
                 item.remove();
@@ -158,8 +94,8 @@
         }
 
         document.getElementById("reset").addEventListener("click", function() {
-            goldList.innerHTML = "";
-            cashList.innerHTML = "";
+            document.getElementById("gold-list").innerHTML = "";
+            document.getElementById("cash-list").innerHTML = "";
             zakatableGold = 0;
             updateResults();
         });
