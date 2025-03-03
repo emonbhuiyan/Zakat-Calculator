@@ -1,161 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zakat Calculator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
         body {
             font-family: sans-serif;
-            margin: 20px;
         }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
+        .header, .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        #result {
+        .result-table {
             margin-top: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
+        }
+        .currency-input {
+            display: inline-flex;
+            align-items: center;
+        }
+        .currency-input select {
+            margin-right: 10px;
+        }
+        @media print {
+            .no-print {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Zakat Calculator</h1>
+        <div class="header">
+            <h2><i class="fas fa-hand-holding-usd"></i> Zakat Calculator</h2>
+        </div>
 
-        <h2>Cash and Bank Balances</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Asset</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Cash</td>
-                    <td><input type="number" id="cash" value="0"></td>
-                </tr>
-                <tr>
-                    <td>Bank Balance</td>
-                    <td><input type="number" id="bank" value="0"></td>
-                </tr>
-                <tr>
-                    <td>Loans Receivable</td>
-                    <td><input type="number" id="loans" value="0"></td>
-                </tr>
-                <tr>
-                    <td>Short Term Debts</td>
-                    <td><input type="number" id="debts" value="0"></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="form-group">
+            <label for="goldCarat">Gold Carat:</label>
+            <select class="form-control" id="goldCarat">
+                <option value="24">24 Carat (99.9%)</option>
+                <option value="22">22 Carat (91.6%)</option>
+                <option value="21">21 Carat (87.5%)</option>
+                <option value="18">18 Carat (75%)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="goldWeight">Weight of Gold (grams):</label>
+            <input type="number" class="form-control" id="goldWeight" placeholder="Enter weight">
+        </div>
+        <div class="form-group">
+            <label for="silverWeight">Weight of Silver (grams):</label>
+            <input type="number" class="form-control" id="silverWeight" placeholder="Enter weight">
+        </div>
+        <div class="form-group">
+            <label for="cashAmount">Cash:</label>
+            <div class="currency-input">
+                <select class="form-control" id="cashCurrency">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="SAR">SAR</option>
+                    <option value="EGP">EGP</option>
+                </select>
+                <input type="number" class="form-control" id="cashAmount" placeholder="Enter amount">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="bankAmount">Bank Savings:</label>
+            <div class="currency-input">
+                <select class="form-control" id="bankCurrency">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="SAR">SAR</option>
+                    <option value="EGP">EGP</option>
+                </select>
+                <input type="number" class="form-control" id="bankAmount" placeholder="Enter amount">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="investmentAmount">Investments:</label>
+            <div class="currency-input">
+                <select class="form-control" id="investmentCurrency">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="SAR">SAR</option>
+                    <option value="EGP">EGP</option>
+                </select>
+                <input type="number" class="form-control" id="investmentAmount" placeholder="Enter amount">
+            </div>
+        </div>
 
-        <h2>Gold and Silver</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Asset</th>
-                    <th>Weight (grams)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Gold</td>
-                    <td><input type="number" id="gold" value="0"></td>
-                </tr>
-                <tr>
-                    <td>Silver</td>
-                    <td><input type="number" id="silver" value="0"></td>
-                </tr>
-            </tbody>
-        </table>
+        <button class="btn btn-primary" onclick="calculateZakat()">Calculate Zakat</button>
+        <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+        <button class="btn btn-info" onclick="printPage()">Print</button>
 
-        <button onclick="calculateZakat()">Calculate Zakat</button>
+        <div id="result" class="result-table"></div>
 
-        <div id="result"></div>
-        <button onclick="printResult()">Print Result</button>
+        <div class="footer">
+            <p>&copy; 2024 Zakat Calculator <i class="fas fa-mosque"></i></p>
+        </div>
     </div>
 
-    <script>
-        function calculateZakat() {
-            let cash = parseFloat(document.getElementById("cash").value) || 0;
-            let bank = parseFloat(document.getElementById("bank").value) || 0;
-            let loans = parseFloat(document.getElementById("loans").value) || 0;
-            let debts = parseFloat(document.getElementById("debts").value) || 0;
-            let gold = parseFloat(document.getElementById("gold").value) || 0;
-            let silver = parseFloat(document.getElementById("silver").value) || 0;
-
-            let cashAssets = cash + bank + loans - debts;
-            let goldValue = gold;
-            let silverValue = silver;
-
-            let nisabGold = 85; // grams
-            let nisabSilver = 595; // grams
-
-            let zakatAmount = 0;
-            let resultText = "";
-            let liable = false;
-
-            if (goldValue >= nisabGold || silverValue >= nisabSilver || cashAssets > 0){
-                liable = true;
-            }
-
-            if (cashAssets > 0) {
-                if(cashAssets >= nisabSilver){
-                    zakatAmount += cashAssets * 0.025
-                }
-            }
-
-            if (goldValue >= nisabGold){
-                zakatAmount += goldValue * 0.025
-            }
-
-            if (silverValue >= nisabSilver){
-                zakatAmount += silverValue * 0.025
-            }
-
-            if(liable){
-                resultText = `Your Zakat amount is: ${zakatAmount.toFixed(2)}<br>`;
-                resultText += `Nisab (Gold): ${nisabGold} grams<br>`;
-                resultText += `Nisab (Silver): ${nisabSilver} grams`;
-            } else {
-                resultText = "You are not obligated to pay Zakat.";
-                resultText += `Nisab (Gold): ${nisabGold} grams<br>`;
-                resultText += `Nisab (Silver): ${nisabSilver} grams`;
-            }
-
-            document.getElementById("result").innerHTML = resultText;
-        }
-
-        function printResult() {
-            window.print();
-        }
-    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
