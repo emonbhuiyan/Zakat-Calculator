@@ -57,7 +57,7 @@ function updateGoldList() {
     let goldList = document.getElementById("goldList");
     goldList.innerHTML = goldItems.map((item, index) =>
         `<li class="list-group-item d-flex justify-content-between bg-warning">
-            <i class="fas fa-ring text-gold"></i> Gold: ${item.weight}g | Pure: ${item.pureGold.toFixed(2)}g | Zakatable: ${item.zakatableGold.toFixed(2)}g
+            <i class="fas fa-ring text-gold"></i> Gold: ${item.weight}g | Pure Gold: ${item.pureGold.toFixed(2)}g | Zakatable Gold: ${item.zakatableGold.toFixed(2)}g
             <button class="btn btn-sm btn-danger" onclick="deleteGold(${index})"><i class="fas fa-trash-alt"></i></button>
         </li>`
     ).join('');
@@ -142,13 +142,13 @@ function resetForm() {
     document.getElementById("result").innerHTML = "";
 }
 
-/*
+
 function printResult() {
     window.print();
 }
-*/
 
-function printResult() {
+
+function printResultFull() {
     let printContent = document.getElementById("result").innerHTML;
     let originalContent = document.body.innerHTML;
     document.body.innerHTML = printContent;
