@@ -98,7 +98,7 @@ async function calculateZakat() {
     let mainCurrency = document.getElementById("mainCurrency").value;
     let totalCash = 0;
     let totalZakatCash = 0;
-    let totalGoldWeight = goldItems.reduce((sum, item) => sum + item.weight, 0);
+    let totalPureGoldWeight = goldItems.reduce((sum, item) => sum + item.pureGold, 0); // Pure gold weight
     let totalZakatableGoldWeight = goldItems.reduce((sum, item) => sum + item.zakatableGold, 0);
     let totalSilverWeight = silverItems.reduce((sum, item) => sum + item.weight, 0);
     let totalZakatableSilverWeight = silverItems.reduce((sum, item) => sum + item.zakatableSilver, 0);
@@ -116,13 +116,17 @@ async function calculateZakat() {
             <h4><i class="fas fa-calculator"></i> Zakat Calculation</h4>
             <p><i class="fas fa-wallet"></i> Total Cash/Assets: <strong>${totalCash.toFixed(2)} ${mainCurrency}</strong></p>
             <p><i class="fas fa-money-bill-wave"></i> Cash Zakat: <strong>${totalZakatCash.toFixed(2)} ${mainCurrency}</strong></p>
-            <p><i class="fas fa-balance-scale"></i> Gold Weight: <strong>${totalGoldWeight.toFixed(2)}g</strong></p>
+            <p><i class="fas fa-balance-scale"></i> Total Gold Weight (Pure Gold): <strong>${totalPureGoldWeight.toFixed(2)}g</strong></p>
             <p><i class="fas fa-gem"></i> Zakatable Gold Weight: <strong>${totalZakatableGoldWeight.toFixed(2)}g</strong></p>
             <p><i class="fas fa-balance-scale-right"></i> Silver Weight: <strong>${totalSilverWeight.toFixed(2)}g</strong></p>
             <p><i class="fas fa-coins"></i> Zakatable Silver Weight: <strong>${totalZakatableSilverWeight.toFixed(2)}g</strong></p>
+            <div class="alert alert-warning mt-3">
+                <i class="fas fa-exclamation-triangle"></i> <strong>Important:</strong> Please check the latest gold and silver prices from the market before finalizing your Zakat calculation.
+            </div>
         </div>
     `;
 }
+
 
 function resetForm() {
     assets = [];
