@@ -29,7 +29,7 @@ function updateAssetList() {
     let assetList = document.getElementById("assetList");
     assetList.innerHTML = assets.map((item, index) =>
         `<li class="list-group-item d-flex justify-content-between bg-light">
-            <i class="fas fa-wallet text-primary"></i> ${item.type} - ${item.amount} ${item.currency}
+            <i class="fas fa-wallet text-primary" style="margin-top: 6px;"></i> ${item.type} - ${item.amount} ${item.currency}
             <button class="btn btn-sm btn-danger" onclick="deleteAsset(${index})"><i class="fas fa-trash-alt"></i></button>
         </li>`
     ).join('');
@@ -57,7 +57,7 @@ function updateGoldList() {
     let goldList = document.getElementById("goldList");
     goldList.innerHTML = goldItems.map((item, index) =>
         `<li class="list-group-item d-flex justify-content-between bg-warning">
-            <i class="fas fa-ring text-gold"></i> Gold: ${item.weight}g | Pure Gold: ${item.pureGold.toFixed(2)}g | Zakatable Gold: ${item.zakatableGold.toFixed(2)}g
+            <i class="fas fa-ring text-gold" style="margin-top: 6px;"></i> Gold: ${item.weight}g | Pure Gold: ${item.pureGold.toFixed(2)}g | Zakatable Gold: ${item.zakatableGold.toFixed(2)}g
             <button class="btn btn-sm btn-danger" onclick="deleteGold(${index})"><i class="fas fa-trash-alt"></i></button>
         </li>`
     ).join('');
@@ -83,7 +83,7 @@ function updateSilverList() {
     let silverList = document.getElementById("silverList");
     silverList.innerHTML = silverItems.map((item, index) =>
         `<li class="list-group-item d-flex justify-content-between bg-secondary text-white">
-            <i class="fas fa-coins text-silver"></i> Silver: ${item.weight}g | Zakatable: ${item.zakatableSilver.toFixed(2)}g
+            <i class="fas fa-coins text-silver" style="margin-top: 6px;"></i> Silver: ${item.weight}g | Zakatable: ${item.zakatableSilver.toFixed(2)}g
             <button class="btn btn-sm btn-danger" onclick="deleteSilver(${index})"><i class="fas fa-trash-alt"></i></button>
         </li>`
     ).join('');
@@ -113,7 +113,7 @@ async function calculateZakat() {
     
     document.getElementById("result").innerHTML = `
         <div class="alert alert-success">
-            <h4><i class="fas fa-calculator"></i> Zakat Calculation</h4>
+            <h4 class="text-center"><i class="fas fa-calculator"></i> Zakat Calculation</h4>
             <p><i class="fas fa-wallet"></i> Total Cash/Assets: <strong>${totalCash.toFixed(2)} ${mainCurrency}</strong></p>
             <p><i class="fas fa-money-bill-wave"></i> Cash Zakat 2.5%: <strong>${totalZakatCash.toFixed(2)} ${mainCurrency}</strong></p>
             <div class="alert alert-primary mt-3">
