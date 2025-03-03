@@ -1,67 +1,134 @@
-const exchangeRateApiKey = "67ca1d11b03dff9c3d66179a";
-let goldList = [], assets = [];
-let silverWeight = 0, goldRate = 0, silverRate = 0;
-let exchangeRates = {};
+let assets = [];
+let goldItems = [];
+let silverWeight = 0;
 
-async function fetchMarketRates() {
-    const response = await fetch(`https://v6.exchangerate-api.com/v6/${exchangeRateApiKey}/latest/USD`);
-    const data = await response.json();
-    exchangeRates = data.conversion_rates;
+function addAsset() {
+    let type = document.getElementById("assetType").value.trim();
+    let amount = parseFloat(document.getElementById("assetAmount").value);
+    let currency = document.getElementById("assetCurrency").value;
 
-    goldRate = 65;  // Example per gram USD
-    silverRate = 0.85;  // Example per gram USD
+    if (type && amount > 0) {
+        assets.push({ type, amount, currency });
+        updateAssetList();
+        document.getElementById("assetType").value = "";
+        document.getElementById("assetAmount").value = "";
+    }
+}
 
-    document.getElementById("marketRates").innerHTML = `
-        <strong>Current Market Rates:</strong><br>
-        Gold: <span class="highlight">$${goldRate} per gram</span><br>
-        Silver: <span class="highlight">$${silverRate} per gram</span>
-    `;
+function updateAssetList() {
+    let list = document.getElementById("assetList");
+    list.innerHTML = "";
+    assets.forEach((asset, index) => {
+        list.innerHTML += `<li class="list-group-item d-flex justify-content-between">
+            <span><i class="fas fa-wallet"></i> ${asset.type}: ${asset.amount} ${asset.currency}</span>
+            <button class="btn btn-danger btn-sm" onclick="removeAsset(${index})"><i class="fas fa-trash"></i></button>
+        </li>`;
+    });
+}
+
+function removeAsset(index) {
+    assets.splice(index, 1);
+    updateAssetList();
 }
 
 function addGold() {
-    let carat = parseInt(document.getElementById("goldCarat").value);
+    let carat = parseFloat(document.getElementById("goldCarat").value);
     let weight = parseFloat(document.getElementById("goldWeight").value);
-    if (weight > 0) goldList.push({ carat, weight });
+
+    if (weight > 0) {
+        goldItems.push({ carat, weight });
+        updateGoldList();
+        document.getElementById("goldWeight").value = "";
+    }
+}
+
+function updateGoldList() {
+    let list = document.getElementById("goldList");
+    list.innerHTML = "";
+    goldItems.forEach((gold, index) => {
+        list.innerHTML += `<li class="list-group-item d-flex justify-content-between">
+            <span><i class="fas fa-ring"></i> ${gold.weight}g (${gold.carat}K)</span>
+            <button class="btn btn-danger btn-sm" onclick="removeGold(${index})"><i class="fas fa-trash"></i></button>
+        </li>`;
+    });
+}
+
+function removeGold(index) {
+    goldItems.splice(index, 1);
+    updateGoldList();
 }
 
 function addSilver() {
-    silverWeight = parseFloat(document.getElementById("silverWeight").value);
+    let weight = parseFloat(document.getElementById("silverWeight").value);
+    if (weight > 0) {
+        silverWeight += weight;
+        updateSilverList();
+        document.getElementById("silverWeight").value = "";
+    }
 }
 
-function addAsset() {
-    let name = document.getElementById("assetName").value;
-    let value = parseFloat(document.getElementById("assetValue").value);
-    let currency = document.getElementById("assetCurrency").value;
-    if (value > 0) assets.push({ name, value, currency });
+function updateSilverList() {
+    let list = document.getElementById("silverList");
+    list.innerHTML = `<li class="list-group-item d-flex justify-content-between">
+        <span><i class="fas fa-coins"></i> ${silverWeight}g</span>
+        <button class="btn btn-danger btn-sm" onclick="resetSilver()"><i class="fas fa-trash"></i></button>
+    </li>`;
+}
+
+function resetSilver() {
+    silverWeight = 0;
+    updateSilverList();
 }
 
 function calculateZakat() {
-    let mainCurrency = document.getElementById("mainCurrency").value;
-    let totalAssets = 0;
-
-    let pureGold = goldList.reduce((sum, gold) => sum + (gold.weight * (gold.carat / 24)), 0);
-    let zakatableGold = pureGold * 0.025;
-    let zakatableSilver = silverWeight * 0.025;
-
-    let goldValue = pureGold * goldRate;
-    let silverValue = silverWeight * silverRate;
-
-    assets.forEach(asset => {
-        let converted = asset.value / (exchangeRates[asset.currency] || 1) * (exchangeRates[mainCurrency] || 1);
-        totalAssets += converted;
-    });
-
-    let totalZakat = (zakatableGold * goldRate) + (zakatableSilver * silverRate) + (totalAssets * 0.025);
+    let totalGold = goldItems.reduce((sum, gold) => sum + (gold.weight * (gold.carat / 24)), 0);
+    let totalSilver = silverWeight;
+    let totalAssets = assets.reduce((sum, asset) => sum + asset.amount, 0);
+    
+    let zakatableGold = totalGold >= 87.48 ? totalGold : 0;
+    let zakatableSilver = totalSilver >= 612.36 ? totalSilver : 0;
+    let zakatDue = (zakatableGold + zakatableSilver + totalAssets) * 0.025;
 
     document.getElementById("result").innerHTML = `
-        <h3>Zakat Calculation</h3>
-        <table class="table table-bordered">
-            <tr><th>Gold Zakat</th><td>${zakatableGold.toFixed(2)} g ($${goldValue.toFixed(2)})</td></tr>
-            <tr><th>Silver Zakat</th><td>${zakatableSilver.toFixed(2)} g ($${silverValue.toFixed(2)})</td></tr>
-            <tr><th>Cash/Assets Zakat</th><td>${totalAssets.toFixed(2)} ${mainCurrency}</td></tr>
-            <tr><th>Total Zakat</th><td>${totalZakat.toFixed(2)} ${mainCurrency}</td></tr>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-coins"></i> Category</th>
+                    <th><i class="fas fa-balance-scale"></i> Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Zakatable Gold</td>
+                    <td>${zakatableGold.toFixed(2)} grams</td>
+                </tr>
+                <tr>
+                    <td>Zakatable Silver</td>
+                    <td>${zakatableSilver.toFixed(2)} grams</td>
+                </tr>
+                <tr>
+                    <td>Total Assets</td>
+                    <td>${totalAssets.toFixed(2)}</td>
+                </tr>
+                <tr class="table-warning">
+                    <td><b>Zakat Due (2.5%)</b></td>
+                    <td><b>${zakatDue.toFixed(2)}</b></td>
+                </tr>
+            </tbody>
         </table>
     `;
 }
 
-fetchMarketRates();
+function resetForm() {
+    assets = [];
+    goldItems = [];
+    silverWeight = 0;
+    updateAssetList();
+    updateGoldList();
+    updateSilverList();
+    document.getElementById("result").innerHTML = "";
+}
+
+function printResult() {
+    window.print();
+}
