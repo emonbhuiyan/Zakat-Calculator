@@ -50,6 +50,11 @@
                     <option value="GBP">GBP</option>
                     <option value="SAR">SAR</option>
                     <option value="EGP">EGP</option>
+                    <option value="BDT">BDT</option>
+                    <option value="INR">INR</option>
+                    <option value="PKR">PKR</option>
+                    <option value="IDR">IDR</option>
+                    <option value="TRY">TRY</option>
                 </select>
             </div>
             <div class="col">
@@ -75,6 +80,7 @@
                 <tr>
                     <th>Asset</th>
                     <th>Weight (grams)</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -92,6 +98,7 @@
                         <div id="pureGoldWeightDisplay"></div>
                         <div id="zakatableGoldWeightDisplay"></div>
                     </td>
+                    <td><button class="btn btn-success btn-sm" onclick="addGold()">Add Gold</button></td>
                 </tr>
                 <tr>
                     <td>Silver</td>
@@ -99,6 +106,7 @@
                         <div id="pureSilverWeightDisplay"></div>
                         <div id="zakatableSilverWeightDisplay"></div>
                     </td>
+                    <td><button class="btn btn-success btn-sm" onclick="addSilver()">Add Silver</button></td>
                 </tr>
             </tbody>
         </table>
@@ -111,6 +119,11 @@
                 <option value="GBP">GBP</option>
                 <option value="SAR">SAR</option>
                 <option value="EGP">EGP</option>
+                <option value="BDT">BDT</option>
+                <option value="INR">INR</option>
+                <option value="PKR">PKR</option>
+                <option value="IDR">IDR</option>
+                <option value="TRY">TRY</option>
             </select>
         </div>
 
@@ -121,7 +134,7 @@
         <div class="result-section">
             <div id="result"></div>
             <div class="alert alert-warning">Nisab Gold: 87.48 grams, Nisab Silver: 612.36 grams.</div>
-            <p>Please find the current market rates for gold and silver to calculate the actual Zakat amount.</p>
+            <p id="goldSilverRateMessage" style="display:none;">Please find the current market rates for gold and silver to calculate the actual Zakat amount of gold and silver.</p>
         </div>
 
         <div class="footer">
