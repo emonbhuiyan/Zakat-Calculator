@@ -4,102 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zakat Calculator</title>
-    <script src="https://kit.fontawesome.com/YOUR-FONTAWESOME-KIT.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/YOUR_FA_KIT.js" crossorigin="anonymous"></script>
     <style>
-        /* Your original styles */
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+        }
     </style>
 </head>
 <body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4"><i class="fas fa-calculator"></i> Zakat Calculator</h2>
+        
+        <!-- Cash & Asset Section -->
+        <div class="card mb-3">
+            <div class="card-header"><i class="fas fa-wallet"></i> Add Cash/Assets</div>
+            <div class="card-body">
+                <div class="input-group mb-2">
+                    <input type="text" id="assetType" class="form-control" placeholder="Asset Type (e.g. Savings)">
+                    <input type="number" id="assetAmount" class="form-control" placeholder="Amount">
+                    <select id="assetCurrency" class="form-control">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="SAR">SAR</option>
+                        <option value="EGP">EGP</option>
+                        <option value="BDT">BDT</option>
+                        <option value="INR">INR</option>
+                        <option value="PKR">PKR</option>
+                        <option value="IDR">IDR</option>
+                        <option value="TRY">TRY</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="addAsset()"><i class="fas fa-plus"></i></button>
+                </div>
+                <ul id="assetList" class="list-group"></ul>
+            </div>
+        </div>
 
-    <h1>Zakat Calculator</h1>
+        <!-- Gold Section -->
+        <div class="card mb-3">
+            <div class="card-header"><i class="fas fa-ring"></i> Add Gold</div>
+            <div class="card-body">
+                <div class="input-group mb-2">
+                    <select id="goldCarat" class="form-control">
+                        <option value="24">24 Carat (99.9%)</option>
+                        <option value="22">22 Carat (91.6%)</option>
+                        <option value="21">21 Carat (87.5%)</option>
+                        <option value="18">18 Carat (75%)</option>
+                        <option value="10">10 Carat (41.7%)</option>
+                    </select>
+                    <input type="number" id="goldWeight" class="form-control" placeholder="Weight (grams)">
+                    <button class="btn btn-warning" onclick="addGold()"><i class="fas fa-plus"></i></button>
+                </div>
+                <ul id="goldList" class="list-group"></ul>
+            </div>
+        </div>
 
-    <section>
-        <h2>Gold</h2>
-        <label>Gold Weight (grams):</label>
-        <input type="number" id="gold-weight">
-        <label>Carat:</label>
-        <select id="gold-carat">
-            <option value="24">24K (100%)</option>
-            <option value="22">22K (91.6%)</option>
-            <option value="21">21K (87.5%)</option>
-            <option value="18">18K (75%)</option>
-            <option value="14">14K (58.3%)</option>
-            <option value="10">10K (41.7%)</option>
-        </select>
-        <button id="add-gold">Add</button>
-    </section>
+        <!-- Silver Section -->
+        <div class="card mb-3">
+            <div class="card-header"><i class="fas fa-coins"></i> Add Silver</div>
+            <div class="card-body">
+                <div class="input-group mb-2">
+                    <input type="number" id="silverWeight" class="form-control" placeholder="Weight (grams)">
+                    <button class="btn btn-secondary" onclick="addSilver()"><i class="fas fa-plus"></i></button>
+                </div>
+                <ul id="silverList" class="list-group"></ul>
+            </div>
+        </div>
 
-    <div id="gold-list"></div>
+        <!-- Main Currency Selection -->
+        <div class="form-group">
+            <label for="mainCurrency">Main Currency for Zakat Calculation:</label>
+            <select class="form-control" id="mainCurrency">
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="SAR">SAR</option>
+                <option value="EGP">EGP</option>
+                <option value="BDT">BDT</option>
+                <option value="INR">INR</option>
+                <option value="PKR">PKR</option>
+                <option value="IDR">IDR</option>
+                <option value="TRY">TRY</option>
+            </select>
+        </div>
 
-    <section>
-        <h2>Cash & Savings</h2>
-        <label>Amount:</label>
-        <input type="number" id="cash-amount">
-        <label>Currency:</label>
-        <select id="currency">
-            <option value="USD">USD - United States Dollar</option>
-            <option value="EGP">EGP - Egyptian Pound</option>
-            <option value="BDT">BDT - Bangladeshi Taka</option>
-            <option value="SAR">SAR - Saudi Riyal</option>
-            <option value="AED">AED - UAE Dirham</option>
-            <option value="GBP">GBP - British Pound</option>
-            <option value="EUR">EUR - Euro</option>
-        </select>
-        <button id="add-cash">Add</button>
-    </section>
+        <!-- Calculate Zakat Button -->
+        <button class="btn btn-success w-100 mt-3" onclick="calculateZakat()"><i class="fas fa-calculator"></i> Calculate Zakat</button>
+        
+        <!-- Result Section -->
+        <div id="result" class="mt-3"></div>
 
-    <div id="cash-list"></div>
+        <div class="alert alert-warning">Nisab Gold: 87.48 grams, Nisab Silver: 612.36 grams.</div>
 
-    <section>
-        <h2>Results</h2>
-        <p>Zakatable Gold: <span id="zakatable-gold">0</span> grams</p>
-        <p>Zakat Due: <span id="zakat-due">0</span></p>
-        <button id="reset">Reset</button>
-    </section>
+        <!-- Reset and Print -->
+        <div class="d-flex justify-content-between mt-3">
+            <button class="btn btn-danger" onclick="resetForm()"><i class="fas fa-trash-alt"></i> Reset</button>
+            <button class="btn btn-info" onclick="printResult()"><i class="fas fa-print"></i> Print</button>
+        </div>
+    </div>
 
-    <script>
-        let zakatableGold = 0;
-
-        document.getElementById("add-gold").addEventListener("click", function() {
-            const weight = parseFloat(document.getElementById("gold-weight").value);
-            const carat = parseFloat(document.getElementById("gold-carat").value);
-            if (weight > 0) {
-                const pureGold = weight * (carat / 24);
-                zakatableGold += pureGold;
-                updateResults();
-                addListItem("gold-list", `${weight}g ${carat}K (Pure: ${pureGold.toFixed(2)}g)`);
-            }
-        });
-
-        document.getElementById("add-cash").addEventListener("click", function() {
-            const amount = parseFloat(document.getElementById("cash-amount").value);
-            const currency = document.getElementById("currency").value;
-            if (amount > 0) {
-                addListItem("cash-list", `${amount} ${currency}`);
-            }
-        });
-
-        function addListItem(listId, text) {
-            const list = document.getElementById(listId);
-            const item = document.createElement("div");
-            item.innerHTML = `<span>${text}</span> <button class="delete-btn">Delete</button>`;
-            list.appendChild(item);
-            item.querySelector(".delete-btn").addEventListener("click", function() {
-                item.remove();
-            });
-        }
-
-        function updateResults() {
-            document.getElementById("zakatable-gold").textContent = zakatableGold.toFixed(2);
-        }
-
-        document.getElementById("reset").addEventListener("click", function() {
-            document.getElementById("gold-list").innerHTML = "";
-            document.getElementById("cash-list").innerHTML = "";
-            zakatableGold = 0;
-            updateResults();
-        });
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
+
+
+<!--
+
+it should from those.
+Just use this changes on it:
+Need some update.
+Fontawesome icons are not visible
+
+Need some padding in the bottom of the page
+
+In calculation result show total cash/asset amount in main currency
+and there show total zakatable gold weight and total zakatable silver weight 
+And add some fontawesome in appropriate place to look it beautiful. 
+In print print full page instead of only result.
+Use some color style to visualize entry place list place.
+And please don't use any static currency exchange rate, use my api to get latest exchange rate. -->
