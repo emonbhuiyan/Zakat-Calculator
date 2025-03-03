@@ -1,6 +1,18 @@
 let assets = [];
 let goldItems = [];
 let silverItems = [];
+const API_KEY = "67ca1d11b03dff9c3d66179a"; // Your ExchangeRate-API Key
+
+async function getExchangeRate(base, target) {
+    try {
+        const response = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${base}`);
+        const data = await response.json();
+        return data.conversion_rates[target] || 1; // Fallback in case target currency is not found
+    } catch (error) {
+        console.error("Exchange rate API error:", error);
+        return 1; // Fallback in case of API failure
+    }
+}
 
 function addAsset() {
     let type = document.getElementById("assetType").value;
@@ -16,8 +28,8 @@ function addAsset() {
 function updateAssetList() {
     let assetList = document.getElementById("assetList");
     assetList.innerHTML = assets.map((item, index) =>
-        `<li class="list-group-item d-flex justify-content-between">
-            ${item.type} - ${item.amount} ${item.currency}
+        `<li class="list-group-item d-flex justify-content-between bg-light">
+            <i class="fas fa-wallet text-primary"></i> ${item.type} - ${item.amount} ${item.currency}
             <button class="btn btn-sm btn-danger" onclick="deleteAsset(${index})"><i class="fas fa-trash-alt"></i></button>
         </li>`
     ).join('');
@@ -44,8 +56,8 @@ function addGold() {
 function updateGoldList() {
     let goldList = document.getElementById("goldList");
     goldList.innerHTML = goldItems.map((item, index) =>
-        `<li class="list-group-item d-flex justify-content-between">
-            Gold: ${item.weight}g | Pure: ${item.pureGold.toFixed(2)}g | Zakatable: ${item.zakatableGold.toFixed(2)}g
+        `<li class="list-group-item d-flex justify-content-between bg-warning">
+            <i class="fas fa-ring text-gold"></i> Gold: ${item.weight}g | Pure: ${item.pureGold.toFixed(2)}g | Zakatable: ${item.zakatableGold.toFixed(2)}g
             <button class="btn btn-sm btn-danger" onclick="deleteGold(${index})"><i class="fas fa-trash-alt"></i></button>
         </li>`
     ).join('');
@@ -70,8 +82,8 @@ function addSilver() {
 function updateSilverList() {
     let silverList = document.getElementById("silverList");
     silverList.innerHTML = silverItems.map((item, index) =>
-        `<li class="list-group-item d-flex justify-content-between">
-            Silver: ${item.weight}g | Zakatable: ${item.zakatableSilver.toFixed(2)}g
+        `<li class="list-group-item d-flex justify-content-between bg-secondary text-white">
+            <i class="fas fa-coins text-silver"></i> Silver: ${item.weight}g | Zakatable: ${item.zakatableSilver.toFixed(2)}g
             <button class="btn btn-sm btn-danger" onclick="deleteSilver(${index})"><i class="fas fa-trash-alt"></i></button>
         </li>`
     ).join('');
@@ -82,20 +94,15 @@ function deleteSilver(index) {
     updateSilverList();
 }
 
-async function getExchangeRate(base, target) {
-    const rates = {
-        "USD": 1, "EUR": 0.92, "GBP": 0.79, "SAR": 3.75, "EGP": 30.9, "BDT": 110, "INR": 82, "PKR": 278, "IDR": 15500, "TRY": 31
-    };
-    return rates[target] / rates[base];
-}
-
 async function calculateZakat() {
     let mainCurrency = document.getElementById("mainCurrency").value;
     let totalCash = 0;
     let totalZakatCash = 0;
     let totalGoldWeight = goldItems.reduce((sum, item) => sum + item.weight, 0);
+    let totalZakatableGoldWeight = goldItems.reduce((sum, item) => sum + item.zakatableGold, 0);
     let totalSilverWeight = silverItems.reduce((sum, item) => sum + item.weight, 0);
-    
+    let totalZakatableSilverWeight = silverItems.reduce((sum, item) => sum + item.zakatableSilver, 0);
+
     for (let asset of assets) {
         let rate = await getExchangeRate(asset.currency, mainCurrency);
         let convertedAmount = asset.amount * rate;
@@ -106,10 +113,13 @@ async function calculateZakat() {
     
     document.getElementById("result").innerHTML = `
         <div class="alert alert-success">
-            <strong>Total Zakat Calculation:</strong><br>
-            <i class="fas fa-money-bill-wave"></i> Cash Zakat: ${totalZakatCash.toFixed(2)} ${mainCurrency} <br>
-            <i class="fas fa-balance-scale"></i> Gold Weight: ${totalGoldWeight.toFixed(2)}g <br>
-            <i class="fas fa-balance-scale"></i> Silver Weight: ${totalSilverWeight.toFixed(2)}g <br>
+            <h4><i class="fas fa-calculator"></i> Zakat Calculation</h4>
+            <p><i class="fas fa-wallet"></i> Total Cash/Assets: <strong>${totalCash.toFixed(2)} ${mainCurrency}</strong></p>
+            <p><i class="fas fa-money-bill-wave"></i> Cash Zakat: <strong>${totalZakatCash.toFixed(2)} ${mainCurrency}</strong></p>
+            <p><i class="fas fa-balance-scale"></i> Gold Weight: <strong>${totalGoldWeight.toFixed(2)}g</strong></p>
+            <p><i class="fas fa-gem"></i> Zakatable Gold Weight: <strong>${totalZakatableGoldWeight.toFixed(2)}g</strong></p>
+            <p><i class="fas fa-balance-scale-right"></i> Silver Weight: <strong>${totalSilverWeight.toFixed(2)}g</strong></p>
+            <p><i class="fas fa-coins"></i> Zakatable Silver Weight: <strong>${totalZakatableSilverWeight.toFixed(2)}g</strong></p>
         </div>
     `;
 }
@@ -125,9 +135,5 @@ function resetForm() {
 }
 
 function printResult() {
-    let printContent = document.getElementById("result").innerHTML;
-    let originalContent = document.body.innerHTML;
-    document.body.innerHTML = printContent;
     window.print();
-    document.body.innerHTML = originalContent;
 }
