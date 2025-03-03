@@ -18,9 +18,6 @@
         .result-section {
             margin-top: 20px;
         }
-        .currency-field {
-            display: none;
-        }
         @media print {
             .no-print {
                 display: none;
@@ -35,49 +32,41 @@
         </div>
 
         <h2>Cash, Bank Savings, Investments</h2>
-        <table class="table">
+        <div class="form-row">
+            <div class="col">
+                <select class="form-control" id="assetType">
+                    <option value="cash">Cash</option>
+                    <option value="bank">Bank Savings</option>
+                    <option value="investment">Investments</option>
+                </select>
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" id="assetAmount" placeholder="Enter amount">
+            </div>
+            <div class="col">
+                <select class="form-control" id="assetCurrency">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="SAR">SAR</option>
+                    <option value="EGP">EGP</option>
+                </select>
+            </div>
+            <div class="col">
+                <button class="btn btn-success" onclick="addAsset()">Add to List</button>
+            </div>
+        </div>
+
+        <table class="table" id="assetList">
             <thead>
                 <tr>
-                    <th>Asset</th>
+                    <th>Asset Type</th>
                     <th>Amount</th>
                     <th>Currency</th>
+                    <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>Cash</td>
-                    <td><input type="number" class="form-control" id="cashAmount" placeholder="Enter amount"></td>
-                    <td><select class="form-control" id="cashCurrency">
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                        <option value="SAR">SAR</option>
-                        <option value="EGP">EGP</option>
-                    </select></td>
-                </tr>
-                <tr>
-                    <td>Bank Savings</td>
-                    <td><input type="number" class="form-control" id="bankAmount" placeholder="Enter amount"></td>
-                    <td><select class="form-control" id="bankCurrency">
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                        <option value="SAR">SAR</option>
-                        <option value="EGP">EGP</option>
-                    </select></td>
-                </tr>
-                <tr>
-                    <td>Investments</td>
-                    <td><input type="number" class="form-control" id="investmentAmount" placeholder="Enter amount"></td>
-                    <td><select class="form-control" id="investmentCurrency">
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                        <option value="SAR">SAR</option>
-                        <option value="EGP">EGP</option>
-                    </select></td>
-                </tr>
-            </tbody>
+            <tbody></tbody>
         </table>
 
         <h2>Gold and Silver</h2>
@@ -101,12 +90,14 @@
                         </select>
                         <input type="number" class="form-control" id="goldWeight" placeholder="Enter weight">
                         <div id="pureGoldWeightDisplay"></div>
+                        <div id="zakatableGoldWeightDisplay"></div>
                     </td>
                 </tr>
                 <tr>
                     <td>Silver</td>
                     <td><input type="number" class="form-control" id="silverWeight" placeholder="Enter weight">
                         <div id="pureSilverWeightDisplay"></div>
+                        <div id="zakatableSilverWeightDisplay"></div>
                     </td>
                 </tr>
             </tbody>
@@ -129,6 +120,7 @@
 
         <div class="result-section">
             <div id="result"></div>
+            <div class="alert alert-warning">Nisab Gold: 87.48 grams, Nisab Silver: 612.36 grams.</div>
             <p>Please find the current market rates for gold and silver to calculate the actual Zakat amount.</p>
         </div>
 
