@@ -4,159 +4,166 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zakat Calculator</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/YOUR_FA_KEY.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/YOUR-FONTAWESOME-KIT.js" crossorigin="anonymous"></script>
     <style>
-        body { padding-bottom: 20px; background: #f8f9fa; }
-        .list-group-item { display: flex; justify-content: space-between; align-items: center; }
-        .entry-area, .list-area { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1); }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            text-align: center;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #155724;
+        }
+        section {
+            background: white;
+            padding: 15px;
+            margin: 10px auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 5px 0;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .btn i {
+            margin-right: 5px;
+        }
+        #gold-list, #cash-list {
+            text-align: left;
+            margin-top: 10px;
+        }
+        .list-item {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .delete-btn {
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 3px;
+        }
     </style>
 </head>
-<body class="container">
+<body>
 
-    <h2 class="mt-3 text-center"><i class="fas fa-calculator"></i> Zakat Calculator</h2>
+    <h1>Zakat Calculator</h1>
 
-    <!-- Main Currency Selection -->
-    <div class="mb-3">
-        <label for="mainCurrency" class="form-label"><i class="fas fa-money-bill-wave"></i> Main Currency:</label>
-        <select id="mainCurrency" class="form-select">
-            <option value="USD">USD - US Dollar</option>
+    <section id="gold-section">
+        <h2><i class="fas fa-ring"></i> Gold</h2>
+        <label for="gold-weight">Gold Weight (grams):</label>
+        <input type="number" id="gold-weight" min="0">
+        <label for="gold-carat">Carat:</label>
+        <select id="gold-carat">
+            <option value="24">24K (100%)</option>
+            <option value="22">22K (91.6%)</option>
+            <option value="21">21K (87.5%)</option>
+            <option value="18">18K (75%)</option>
+            <option value="14">14K (58.3%)</option>
+            <option value="10">10K (41.7%)</option>
+        </select>
+        <button id="add-gold" class="btn"><i class="fas fa-plus"></i> Add</button>
+    </section>
+
+    <div id="gold-list"></div>
+
+    <section id="cash-section">
+        <h2><i class="fas fa-coins"></i> Cash & Savings</h2>
+        <label for="cash-amount">Amount:</label>
+        <input type="number" id="cash-amount" min="0">
+        <label for="currency">Currency:</label>
+        <select id="currency">
+            <option value="USD">USD - United States Dollar</option>
             <option value="EGP">EGP - Egyptian Pound</option>
             <option value="BDT">BDT - Bangladeshi Taka</option>
+            <option value="SAR">SAR - Saudi Riyal</option>
+            <option value="AED">AED - UAE Dirham</option>
+            <option value="GBP">GBP - British Pound</option>
+            <option value="EUR">EUR - Euro</option>
         </select>
-    </div>
+        <button id="add-cash" class="btn"><i class="fas fa-plus"></i> Add</button>
+    </section>
 
-    <!-- Asset Entry -->
-    <div class="entry-area mb-4">
-        <h4><i class="fas fa-wallet"></i> Add Cash/Asset</h4>
-        <div class="input-group">
-            <input type="text" id="assetType" class="form-control" placeholder="Asset Type (e.g., Savings)">
-            <input type="number" id="assetAmount" class="form-control" placeholder="Amount">
-            <select id="assetCurrency" class="form-select">
-                <option value="USD">USD</option>
-                <option value="EGP">EGP</option>
-                <option value="BDT">BDT</option>
-            </select>
-            <button class="btn btn-success" onclick="addAsset()"><i class="fas fa-plus-circle"></i> Add</button>
-        </div>
-    </div>
+    <div id="cash-list"></div>
 
-    <!-- Gold Entry -->
-    <div class="entry-area mb-4">
-        <h4><i class="fas fa-ring"></i> Add Gold</h4>
-        <div class="input-group">
-            <input type="number" id="goldWeight" class="form-control" placeholder="Weight in grams">
-            <select id="goldCarat" class="form-select">
-                <option value="24">24K</option>
-                <option value="22">22K</option>
-                <option value="18">18K</option>
-            </select>
-            <button class="btn btn-warning" onclick="addGold()"><i class="fas fa-plus-circle"></i> Add</button>
-        </div>
-    </div>
-
-    <!-- Silver Entry -->
-    <div class="entry-area mb-4">
-        <h4><i class="fas fa-coins"></i> Add Silver</h4>
-        <div class="input-group">
-            <input type="number" id="silverWeight" class="form-control" placeholder="Weight in grams">
-            <button class="btn btn-secondary" onclick="addSilver()"><i class="fas fa-plus-circle"></i> Add</button>
-        </div>
-    </div>
-
-    <!-- List Display -->
-    <div class="list-area mb-4">
-        <h4><i class="fas fa-list"></i> Added Items</h4>
-        <ul id="assetList" class="list-group mb-2"></ul>
-        <ul id="goldList" class="list-group mb-2"></ul>
-        <ul id="silverList" class="list-group"></ul>
-    </div>
-
-    <!-- Calculate & Reset Buttons -->
-    <button class="btn btn-primary w-100 mb-2" onclick="calculateZakat()"><i class="fas fa-calculator"></i> Calculate Zakat</button>
-    <button class="btn btn-danger w-100 mb-2" onclick="resetForm()"><i class="fas fa-redo-alt"></i> Reset</button>
-    <button class="btn btn-dark w-100" onclick="printResult()"><i class="fas fa-print"></i> Print</button>
-
-    <!-- Result Display -->
-    <div id="result" class="mt-3"></div>
+    <section id="results">
+        <h2><i class="fas fa-calculator"></i> Results</h2>
+        <p>Zakatable Gold: <span id="zakatable-gold">0</span> grams</p>
+        <p>Zakat Due: <span id="zakat-due">0</span></p>
+        <button id="reset" class="btn"><i class="fas fa-redo"></i> Reset</button>
+    </section>
 
     <script>
-        let assets = [], goldItems = [], silverItems = [];
+        const goldList = document.getElementById("gold-list");
+        const cashList = document.getElementById("cash-list");
+        let zakatableGold = 0;
 
-        async function getExchangeRate(base, target) {
-            const apiKey = "YOUR_API_KEY";
-            const url = `https://api.exchangerate-api.com/v4/latest/${base}`;
-            try {
-                let response = await fetch(url);
-                let data = await response.json();
-                return data.rates[target] || 1;
-            } catch (error) {
-                console.error("Exchange rate fetch error:", error);
-                return 1;
-            }
-        }
-
-        function addAsset() {
-            let type = document.getElementById("assetType").value;
-            let amount = parseFloat(document.getElementById("assetAmount").value);
-            let currency = document.getElementById("assetCurrency").value;
-
-            if (type && amount > 0) {
-                assets.push({ type, amount, currency });
-                updateList("assetList", assets, "fa-coins", deleteAsset);
-            }
-        }
-
-        function addGold() {
-            let weight = parseFloat(document.getElementById("goldWeight").value);
-            let carat = parseInt(document.getElementById("goldCarat").value);
+        document.getElementById("add-gold").addEventListener("click", function() {
+            const weight = parseFloat(document.getElementById("gold-weight").value);
+            const carat = parseFloat(document.getElementById("gold-carat").value);
             if (weight > 0) {
-                let pureGold = (weight * carat) / 24;
-                let zakatableGold = pureGold * 0.025;
-                goldItems.push({ weight, pureGold, zakatableGold });
-                updateList("goldList", goldItems, "fa-ring", deleteGold);
+                const pureGold = weight * (carat / 24);
+                zakatableGold += pureGold;
+                updateResults();
+                addListItem(goldList, `${weight}g ${carat}K (Pure: ${pureGold.toFixed(2)}g)`);
             }
-        }
+        });
 
-        function addSilver() {
-            let weight = parseFloat(document.getElementById("silverWeight").value);
-            if (weight > 0) {
-                let zakatableSilver = weight * 0.025;
-                silverItems.push({ weight, zakatableSilver });
-                updateList("silverList", silverItems, "fa-coins", deleteSilver);
+        document.getElementById("add-cash").addEventListener("click", function() {
+            const amount = parseFloat(document.getElementById("cash-amount").value);
+            const currency = document.getElementById("currency").value;
+            if (amount > 0) {
+                addListItem(cashList, `${amount} ${currency}`);
             }
+        });
+
+        function addListItem(list, text) {
+            const item = document.createElement("div");
+            item.classList.add("list-item");
+            item.innerHTML = `<span>${text}</span> <button class="delete-btn"><i class="fas fa-trash"></i></button>`;
+            list.appendChild(item);
+            item.querySelector(".delete-btn").addEventListener("click", function() {
+                item.remove();
+            });
         }
 
-        function updateList(elementId, items, icon, deleteFunc) {
-            let list = document.getElementById(elementId);
-            list.innerHTML = items.map((item, index) =>
-                `<li class="list-group-item">
-                    <i class="fas ${icon}"></i> ${JSON.stringify(item)}
-                    <button class="btn btn-sm btn-danger" onclick="(${deleteFunc})(${index})">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </li>`
-            ).join('');
+        function updateResults() {
+            document.getElementById("zakatable-gold").textContent = zakatableGold.toFixed(2);
         }
 
-        async function calculateZakat() {
-            let mainCurrency = document.getElementById("mainCurrency").value;
-            let totalCash = 0, totalZakatCash = 0;
-            let totalGold = goldItems.reduce((sum, item) => sum + item.zakatableGold, 0);
-            let totalSilver = silverItems.reduce((sum, item) => sum + item.zakatableSilver, 0);
-
-            for (let asset of assets) {
-                let rate = await getExchangeRate(asset.currency, mainCurrency);
-                totalCash += asset.amount * rate;
-            }
-            totalZakatCash = totalCash * 0.025;
-
-            document.getElementById("result").innerHTML = `<strong>Total Zakat:</strong> ${totalZakatCash.toFixed(2)} ${mainCurrency}`;
-        }
-
-        function resetForm() { assets = []; goldItems = []; silverItems = []; calculateZakat(); }
-        function printResult() { window.print(); }
-
+        document.getElementById("reset").addEventListener("click", function() {
+            goldList.innerHTML = "";
+            cashList.innerHTML = "";
+            zakatableGold = 0;
+            updateResults();
+        });
     </script>
+
 </body>
 </html>
