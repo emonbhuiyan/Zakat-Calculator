@@ -143,12 +143,12 @@ function resetForm() {
 }
 
 
-function printResult() {
+function printFullPage() {
     window.print();
 }
 
 
-function printResultFull() {
+function printResult() {
     let printContent = document.getElementById("result").innerHTML;
     let originalContent = document.body.innerHTML;
     document.body.innerHTML = printContent;
