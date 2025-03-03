@@ -74,41 +74,52 @@
             <tbody></tbody>
         </table>
 
-        <h2>Gold and Silver</h2>
-        <table class="table">
+        <h2>Gold</h2>
+        <div class="form-row">
+            <div class="col">
+                <select class="form-control" id="goldCarat">
+                    <option value="24">24 Carat (99.9%)</option>
+                    <option value="22">22 Carat (91.6%)</option>
+                    <option value="21">21 Carat (87.5%)</option>
+                    <option value="18">18 Carat (75%)</option>
+                    <option value="10">10 Carat (41.7%)</option>
+                </select>
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" id="goldWeight" placeholder="Enter weight">
+            </div>
+            <div class="col">
+                <button class="btn btn-success" onclick="addGold()">Add Gold</button>
+            </div>
+        </div>
+        <table class="table" id="goldList">
             <thead>
                 <tr>
-                    <th>Asset</th>
+                    <th>Carat</th>
                     <th>Weight (grams)</th>
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody></tbody>
+        </table>
+
+        <h2>Silver</h2>
+        <div class="form-row">
+            <div class="col">
+                <input type="number" class="form-control" id="silverWeight" placeholder="Enter weight">
+            </div>
+            <div class="col">
+                <button class="btn btn-success" onclick="addSilver()">Add Silver</button>
+            </div>
+        </div>
+        <table class="table" id="silverList">
+            <thead>
                 <tr>
-                    <td>Gold</td>
-                    <td>
-                        <select class="form-control" id="goldCarat">
-                            <option value="24">24 Carat (99.9%)</option>
-                            <option value="22">22 Carat (91.6%)</option>
-                            <option value="21">21 Carat (87.5%)</option>
-                            <option value="18">18 Carat (75%)</option>
-                            <option value="10">10 Carat (41.7%)</option>
-                        </select>
-                        <input type="number" class="form-control" id="goldWeight" placeholder="Enter weight">
-                        <div id="pureGoldWeightDisplay"></div>
-                        <div id="zakatableGoldWeightDisplay"></div>
-                    </td>
-                    <td><button class="btn btn-success btn-sm" onclick="addGold()">Add Gold</button></td>
+                    <th>Weight (grams)</th>
+                    <th>Action</th>
                 </tr>
-                <tr>
-                    <td>Silver</td>
-                    <td><input type="number" class="form-control" id="silverWeight" placeholder="Enter weight">
-                        <div id="pureSilverWeightDisplay"></div>
-                        <div id="zakatableSilverWeightDisplay"></div>
-                    </td>
-                    <td><button class="btn btn-success btn-sm" onclick="addSilver()">Add Silver</button></td>
-                </tr>
-            </tbody>
+            </thead>
+            <tbody></tbody>
         </table>
 
         <div class="form-group">
