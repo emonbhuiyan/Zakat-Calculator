@@ -6,10 +6,10 @@
   <title>Zakat Calculator</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body data-theme="light">
-
   <!-- Header -->
   <div id="header"></div>
 
@@ -17,6 +17,7 @@
   <main class="container my-5">
     <h1 class="text-center mb-4">Zakat Calculator</h1>
     <form id="wealthForm" class="mb-4">
+      <!-- Type Selection -->
       <div class="mb-3">
         <label for="type" class="form-label">Type:</label>
         <select id="type" class="form-select">
@@ -29,11 +30,13 @@
         </select>
       </div>
 
+      <!-- Amount Input -->
       <div class="mb-3" id="amountField" style="display: none;">
-        <label for="amount" class="form-label">Amount:</label>
+        <label for="amount" class="form-label" id="amountLabel">Amount:</label>
         <input type="number" id="amount" class="form-control" placeholder="Enter amount" step="0.01">
       </div>
 
+      <!-- Carat Selection (for Gold) -->
       <div class="mb-3" id="caratField" style="display: none;">
         <label for="carat" class="form-label">Carat:</label>
         <select id="carat" class="form-select">
@@ -45,35 +48,48 @@
         </select>
       </div>
 
-      <div class="mb-3" id="currencyField" style="display: none;">
+      <!-- Currency Selection (Hidden for Gold/Silver) -->
+      <div class="mb-3" id="currencyField">
         <label for="currency" class="form-label">Currency:</label>
         <select id="currency" class="form-select">
           <option value="USD">USD</option>
           <option value="BDT">BDT</option>
           <option value="EGP">EGP</option>
           <option value="SAR">SAR</option>
+          <option value="INR">INR</option>
+          <option value="PKR">PKR</option>
+          <option value="TRY">TRY</option>
+          <option value="IDR">IDR</option>
         </select>
       </div>
 
+      <!-- Add Button -->
       <button type="button" id="addWealth" class="btn btn-primary w-100" style="display: none;">Add to List</button>
     </form>
 
-    <h3 class="mt-4">Cash, Investments, and Bank Savings</h3>
-    <table class="table table-bordered" id="cashList">
-      <thead>
-        <tr><th>Type</th><th>Amount</th><th>Currency</th><th>Action</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
+    <!-- Gold and Silver Table -->
     <h3 class="mt-4">Gold and Silver</h3>
     <table class="table table-bordered" id="goldSilverList">
       <thead>
-        <tr><th>Type</th><th>Weight (grams)</th><th>Carat</th><th>Pure Gold</th><th>Zakatable Weight</th><th>Action</th></tr>
+        <tr>
+          <th>Type</th>
+          <th>Weight (grams)</th>
+          <th>Carat</th>
+          <th>Pure Gold</th>
+          <th>Zakatable Weight</th>
+          <th>Zakat Due (2.5%)</th>
+          <th>Action</th>
+        </tr>
       </thead>
       <tbody></tbody>
     </table>
 
+    <!-- Zakat Nisab Info -->
+    <div id="zakatNisab" class="alert alert-info">
+      Zakat Nisab: 87.48g Gold or 612.36g Silver
+    </div>
+
+    <!-- Main Currency Selection -->
     <div class="mb-3">
       <label for="mainCurrency" class="form-label">Main Currency:</label>
       <select id="mainCurrency" class="form-select">
@@ -81,13 +97,24 @@
         <option value="BDT">BDT</option>
         <option value="EGP">EGP</option>
         <option value="SAR">SAR</option>
+        <option value="INR">INR</option>
+        <option value="PKR">PKR</option>
+        <option value="TRY">TRY</option>
+        <option value="IDR">IDR</option>
       </select>
     </div>
 
+    <!-- Calculate Button -->
     <button type="button" id="calculateZakat" class="btn btn-success w-100 mb-3">Calculate Zakat</button>
+
+    <!-- Results -->
     <div id="result" class="text-center"></div>
+
+    <!-- Print & PDF Buttons -->
+    <button type="button" id="printReport" class="btn btn-secondary w-100">Print Report</button>
   </main>
 
+  <!-- Footer -->
   <div id="footer"></div>
 
   <script src="assets/js/script.js"></script>
