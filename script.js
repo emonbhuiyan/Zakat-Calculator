@@ -66,7 +66,10 @@ function calculateGoldSilverWeights() {
     document.getElementById("pureSilverWeightDisplay").innerHTML = `Silver: ${totalSilver.toFixed(2)} grams`;
     document.getElementById("zakatableSilverWeightDisplay").innerHTML = `Zakatable Silver: ${(totalSilver * 0.025).toFixed(2)} grams`;
 
-    if (totalPureGold >= 87.48 || totalSilver >= 612.36) {
+    let nisabGold = 87.48;
+    let nisabSilver = 612.36;
+
+    if (totalPureGold >= nisabGold || totalSilver >= nisabSilver) {
         document.getElementById("goldSilverRateMessage").style.display = "block";
     } else {
         document.getElementById("goldSilverRateMessage").style.display = "none";
@@ -116,8 +119,8 @@ function calculateZakat() {
 
     resultText += `</tbody></table>`;
 
-    resultText += `<p>Pure Gold: ${totalPureGold.toFixed(2)} grams, Zakat: ${(totalPureGold * 0.025).toFixed(2)}</p>`;
-    resultText += `<p>Silver: ${totalSilver.toFixed(2)} grams, Zakat: ${(totalSilver * 0.025).toFixed(2)}</p>`;
+    resultText += `<p>Pure Gold: ${totalPureGold.toFixed(2)} grams, Zakat: ${(totalPureGold * 0.025).toFixed(2)} grams</p>`;
+    resultText += `<p>Silver: ${totalSilver.toFixed(2)} grams, Zakat: ${(totalSilver * 0.025).toFixed(2)} grams</p>`;
     resultText += `<p>Total Cash: ${totalCash.toFixed(2)}, Zakat: ${(totalCash * 0.025).toFixed(2)}</p>`;
     resultText += `<p>Total Zakat Amount (${mainCurrency}): ${zakatAmount.toFixed(2)}</p>`;
 
