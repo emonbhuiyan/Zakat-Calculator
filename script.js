@@ -1,4 +1,5 @@
 let assets = [];
+let liabilities = [];
 let goldItems = [];
 let silverItems = [];
 
@@ -99,6 +100,78 @@ function deleteAsset(index) {
     updateAssetList();
 }
 
+function getTotalAssets() {
+    return assets.reduce((sum, asset) => sum + asset.amount, 0); 
+}
+
+function addLiability() {
+    let liabilityTypeInput = document.getElementById("liabilityType");
+    let liabilityAmountInput = document.getElementById("liabilityAmount");
+    let liabilityCurrencyInput = document.getElementById("liabilityCurrency");
+    let errorMessage = document.getElementById("liabilityError"); // Error message container
+
+    let type = liabilityTypeInput.value.trim();
+    let amount = parseFloat(liabilityAmountInput.value);
+    let currency = liabilityCurrencyInput.value;
+
+    // Validate input
+    if (!type || /^\d+$/.test(type) || isNaN(amount) || amount <= 0 || !currency || currency === "select") {
+        errorMessage.innerHTML = "⚠️ Please enter a valid liability type (not just numbers), enter a positive amount, and select a currency.";
+        return;
+    }
+
+    // Clear error message
+    errorMessage.innerHTML = "";
+
+    // Add liability
+    liabilities.push({ type, amount, currency });
+    console.log("Liabilities after adding:", liabilities); // Debugging
+
+    updateLiabilityList();
+
+    // Reset inputs
+    liabilityTypeInput.value = "";
+    liabilityAmountInput.value = "";
+    liabilityCurrencyInput.value = "select";
+}
+
+
+function updateLiabilityList() {
+    let list = document.getElementById("liabilityList");
+    list.innerHTML = "";
+
+    liabilities.forEach((liability, index) => {
+        let listItem = document.createElement("li");
+        listItem.className = "list-group-item d-flex justify-content-between bg-light";
+        listItem.innerHTML = `
+            <i class="fas fa-hand-holding-usd text-danger" style="margin-top: 6px;"></i> 
+            ${liability.type} - ${liability.amount} ${liability.currency}
+            <button class="btn btn-sm btn-danger" onclick="removeLiability(${index})">
+                <i class="fas fa-trash-alt"></i>
+            </button>`;
+        list.appendChild(listItem);
+    });
+
+    updateTotalAssets();
+}
+
+
+function removeLiability(index) {
+    liabilities.splice(index, 1);
+    updateLiabilityList();
+}
+
+function getTotalLiabilities() {
+    return liabilities.reduce((sum, l) => sum + l.amount, 0);
+}
+
+// Ensure this function updates total assets after deducting liabilities
+function updateTotalAssets() {
+    let totalAssets = getTotalAssets() - getTotalLiabilities();
+    console.log(`Total Assets after Liabilities: ${totalAssets.toFixed(2)}`); // Debugging output
+    return totalAssets;
+}
+
 function addGold() {
     let goldCaratInput = document.getElementById("goldCarat");
     let goldWeightInput = document.getElementById("goldWeight");
@@ -126,8 +199,6 @@ function addGold() {
     goldCaratInput.value = "select"; // Reset the carat dropdown
     goldWeightInput.value = "";
 }
-
-
 
 function updateGoldList() {
     let goldList = document.getElementById("goldList");
@@ -165,7 +236,6 @@ function addSilver() {
     // Clear the input field after adding
     silverWeightInput.value = "";
 }
-
 
 function updateSilverList() {
     let silverList = document.getElementById("silverList");
@@ -268,6 +338,7 @@ async function calculateZakat() {
 
     // Initialize totals
     let totalCash = 0;
+    let totalLiabilities = 0;
     let totalZakatCash = 0;
 
     // Calculate total pure gold and zakatable gold
@@ -281,6 +352,7 @@ async function calculateZakat() {
     console.log("Gold Items:", goldItems);
     console.log("Silver Items:", silverItems);
     console.log("Assets:", assets);
+    console.log("Liabilities:", liabilities);
 
     // Convert all assets to the main currency
     if (assets.length > 0) {
@@ -291,20 +363,37 @@ async function calculateZakat() {
                     console.warn(`Invalid exchange rate for ${asset.currency} to ${mainCurrency}. Using default 1.`);
                     return asset.amount; // Fallback in case of API failure
                 }
-                const convertedAmount = asset.amount * rate;
-                console.log(`Converted ${asset.amount} ${asset.currency} to ${convertedAmount.toFixed(2)} ${mainCurrency} (Rate: ${rate})`);
-                return convertedAmount;
+                return asset.amount * rate;
             })
         );
-
-        // Sum up all converted amounts
         totalCash = convertedAssets.reduce((sum, amount) => sum + amount, 0);
     }
 
-    // Calculate Zakat on cash (2.5% of total cash)
-    totalZakatCash = totalCash * 0.025;
+    // Convert all liabilities to the main currency and sum them
+    if (liabilities.length > 0) {
+        const convertedLiabilities = await Promise.all(
+            liabilities.map(async (liability) => {
+                const rate = await getExchangeRate(liability.currency, mainCurrency, date);
+                if (!rate || rate <= 0) {
+                    console.warn(`Invalid exchange rate for ${liability.currency} to ${mainCurrency}. Using default 1.`);
+                    return liability.amount; // Fallback in case of API failure
+                }
+                return liability.amount * rate;
+            })
+        );
+        totalLiabilities = convertedLiabilities.reduce((sum, amount) => sum + amount, 0);
+    }
+
+    // Deduct liabilities from total cash/assets
+    let netZakatableAssets = totalCash - totalLiabilities;
+    netZakatableAssets = netZakatableAssets > 0 ? netZakatableAssets : 0; // Ensure it's not negative
+
+    // Calculate Zakat on net assets (2.5% of net assets)
+    totalZakatCash = netZakatableAssets * 0.025;
 
     console.log("Total Cash:", totalCash.toFixed(2), mainCurrency);
+    console.log("Total Liabilities:", totalLiabilities.toFixed(2), mainCurrency);
+    console.log("Net Zakatable Assets:", netZakatableAssets.toFixed(2), mainCurrency);
     console.log("Total Zakat on Cash:", totalZakatCash.toFixed(2), mainCurrency);
     console.log("Total Pure Gold Weight:", totalPureGoldWeight.toFixed(2), "g");
     console.log("Total Zakatable Gold Weight:", totalZakatableGoldWeight.toFixed(2), "g");
@@ -314,27 +403,83 @@ async function calculateZakat() {
     // Format the date
     const formattedDate = formatDate(date);
 
-    // Display the result
+    // Display the result in a structured table format
     document.getElementById("result").innerHTML = `
-        <div class="alert alert-success">
+        <div class="alert alert-info">
             <h4 class="text-center"><i class="fas fa-calculator"></i> Zakat Calculation</h4>
-            <p><i class="fas fa-calendar-alt"></i> Zakat Calculation Date: <strong>${formattedDate}</strong></p>
-            <p><i class="fas fa-wallet"></i> Total Cash/Assets: <strong>${totalCash.toFixed(2)} ${mainCurrency}</strong></p>
-            <p><i class="fas fa-money-bill-wave"></i> Cash Zakat 2.5%: <strong>${totalZakatCash.toFixed(2)} ${mainCurrency}</strong></p>
-            <div class="alert alert-primary mt-3">
-                <p><i class="fas fa-balance-scale"></i> Total Pure Gold Weight: <strong>${totalPureGoldWeight.toFixed(2)}g</strong></p>
-                <p><i class="fas fa-gem"></i> Zakatable Gold Weight 2.5%: <strong>${totalZakatableGoldWeight.toFixed(2)}g</strong></p>
+            <p class="text-center"><i class="fas fa-calendar-alt"></i> <strong>Zakat Calculation Date: ${formattedDate}</strong></p>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-secondary text-center">
+                        <tr>
+                            <th colspan="2">Assets & Liabilities</th>
+                        </tr>
+                    </thead>
+                    <tbody class="">
+                        <tr class="alert alert-dark text-center">
+                            <td><strong>Category</strong></td>
+                            <td><strong>Amount</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-wallet"></i> Total Cash/Assets</td>
+                            <td class="text-center">${totalCash.toFixed(2)} ${mainCurrency}</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-file-invoice-dollar"></i> Total Liabilities</td>
+                            <td  class="text-center">${totalLiabilities.toFixed(2)} ${mainCurrency}</td>
+                        </tr>
+                        <tr class="table-light">
+                            <td><i class="fas fa-balance-scale-left"></i> Net Zakatable Assets</td>
+                            <td  class="text-center">${netZakatableAssets.toFixed(2)} ${mainCurrency}</td>
+                        </tr>
+                        <tr class="table-warning">
+                            <td class="text-end"><i class="fas fa-money-bill-wave"></i><strong> Cash Zakat (2.5%)</strong></td>
+                            <td class="text-start"><strong>${totalZakatCash.toFixed(2)} ${mainCurrency}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table table-bordered table-hover">
+                    <thead class="table-secondary text-center">
+                        <tr>
+                            <th colspan="2">Gold & Silver</th>
+                        </tr>
+                    </thead>
+                    <tbody class="">
+                        <tr class="alert alert-dark text-center">
+                            <td><strong>Item</strong></td>
+                            <td><strong>Weight (gram)</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-balance-scale"></i> Total Pure Gold Weight</td>
+                            <td class="text-center">${totalPureGoldWeight.toFixed(2)}g</strong></td>
+                        </tr>
+                        <tr class="table-warning">
+                            <td class="text-end"><i class="fas fa-gem"></i><strong> Zakatable Gold Weight (2.5%)</strong></td>
+                            <td><strong>${totalZakatableGoldWeight.toFixed(2)}g</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-balance-scale-right"></i> Total Silver Weight</td>
+                            <td class="text-center">${totalSilverWeight.toFixed(2)}g</td>
+                        </tr>
+                        <tr class="table-warning">
+                            <td class="text-end"><i class="fas fa-coins"></i><strong> Zakatable Silver Weight (2.5%)</strong></td>
+                            <td><strong>${totalZakatableSilverWeight.toFixed(2)}g</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="alert alert-secondary mt-3">
-                <p><i class="fas fa-balance-scale-right"></i> Total Silver Weight: <strong>${totalSilverWeight.toFixed(2)}g</strong></p>
-                <p><i class="fas fa-coins"></i> Zakatable Silver Weight 2.5%: <strong>${totalZakatableSilverWeight.toFixed(2)}g</strong></p>
-            </div>
-            <div class="alert alert-warning">
+
+            <div class="alert alert-danger text-center">
                 <i class="fas fa-exclamation-triangle"></i> <strong>Important:</strong> Please check the latest gold and silver prices from the market before finalizing your Zakat calculation.
             </div>
         </div>
     `;
 }
+
+
+
 
 function resetForm() {
     assets = [];

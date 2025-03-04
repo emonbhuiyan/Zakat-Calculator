@@ -50,6 +50,34 @@
             </div>
         </div>
 
+        <!-- Loan & Liabilities Section -->
+        <div class="card mb-3">
+            <div class="card-header text-center"><i class="fas fa-hand-holding-usd"></i> Add Loan/Liabilities</div>
+            <div class="card-body">
+                <div class="input-group mb-2">
+                    <input type="text" id="liabilityType" class="form-control" placeholder="Liability Type (e.g. Loan)">
+                    <input type="number" id="liabilityAmount" class="form-control" placeholder="Amount">
+                    <select id="liabilityCurrency" class="form-control">
+                        <option value="select">⬇️ Select</option>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="SAR">SAR - Saudi Riyal</option>
+                        <option value="EGP">EGP - Egyptian Pound</option>
+                        <option value="BDT">BDT - Bangladeshi Taka</option>
+                        <option value="INR">INR - Indian Rupee</option>
+                        <option value="PKR">PKR - Pakistani Rupee</option>
+                        <option value="IDR">IDR - Indonesian Rupiah</option>
+                        <option value="TRY">TRY - Turkish Lira</option>
+                    </select>
+                    <button class="btn btn-danger" onclick="addLiability()"><i class="fas fa-minus"></i></button>
+                </div>
+                <div id="liabilityError" class="text-danger mt-2"></div> <!-- Error message appears here -->
+                <!-- <div id="totalAssetsDisplay" class="text-success font-weight-bold"></div>  -->
+                <ul id="liabilityList" class="list-group"></ul>
+            </div>
+        </div>
+
         <!-- Gold Section -->
         <div class="card mb-3">
             <div class="card-header text-center"><i class="fas fa-ring"></i> Add Gold</div>
