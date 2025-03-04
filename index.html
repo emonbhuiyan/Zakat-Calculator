@@ -6,7 +6,6 @@
     <title>Zakat Calculator</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://kit.fontawesome.com/YOUR_FA_KIT.js" crossorigin="anonymous"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -31,19 +30,21 @@
                     <input type="text" id="assetType" class="form-control" placeholder="Asset Type (e.g. Savings)">
                     <input type="number" id="assetAmount" class="form-control" placeholder="Amount">
                     <select id="assetCurrency" class="form-control">
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                        <option value="SAR">SAR</option>
-                        <option value="EGP">EGP</option>
-                        <option value="BDT">BDT</option>
-                        <option value="INR">INR</option>
-                        <option value="PKR">PKR</option>
-                        <option value="IDR">IDR</option>
-                        <option value="TRY">TRY</option>
+                        <option value="select">⬇️ Select</option>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="SAR">SAR - Saudi Riyal</option>
+                        <option value="EGP">EGP - Egyptian Pound</option>
+                        <option value="BDT">BDT - Bangladeshi Taka</option>
+                        <option value="INR">INR - Indian Rupee</option>
+                        <option value="PKR">PKR - Pakistani Rupee</option>
+                        <option value="IDR">IDR - Indonesian Rupiah</option>
+                        <option value="TRY">TRY - Turkish Lira</option>
                     </select>
                     <button class="btn btn-primary" onclick="addAsset()"><i class="fas fa-plus"></i></button>
                 </div>
+                <div id="assetError" class="text-danger mt-2"></div> <!-- Error message appears here -->
                 <ul id="assetList" class="list-group"></ul>
             </div>
         </div>
@@ -54,6 +55,7 @@
             <div class="card-body">
                 <div class="input-group mb-2">
                     <select id="goldCarat" class="form-control">
+                        <option value="select">⬇️ Select Gold Carat</option>
                         <option value="24">24 Carat (99.9%)</option>
                         <option value="22">22 Carat (91.6%)</option>
                         <option value="21">21 Carat (87.5%)</option>
@@ -63,6 +65,7 @@
                     <input type="number" id="goldWeight" class="form-control" placeholder="Weight (grams)">
                     <button class="btn btn-warning" onclick="addGold()"><i class="fas fa-plus"></i></button>
                 </div>
+                <div id="goldError" class="text-danger mt-2"></div> <!-- Error message appears here -->
                 <ul id="goldList" class="list-group"></ul>
             </div>
         </div>
@@ -75,42 +78,53 @@
                     <input type="number" id="silverWeight" class="form-control" placeholder="Weight (grams)">
                     <button class="btn btn-secondary" onclick="addSilver()"><i class="fas fa-plus"></i></button>
                 </div>
+                <div id="silverAlert" class="text-danger mt-2"></div> <!-- Alert will show here -->
                 <ul id="silverList" class="list-group"></ul>
             </div>
         </div>
 
         <!-- Date Selection for Past Date Zakat Calculation -->
         <div class="card mb-3">
-            <div class="card-header text-center"><i class="fas fa-coins"></i> Select Date</div>
+            <div class="card-header text-center"><i class="fas fa-calendar-alt"></i> Select Date to Calculate Past Date Zakat (Optional)</div>
             <div class="card-body">
                 <div class="input-group mb-2">
-                    <label for="exchangeDate">Select Date (Optional for for previous time Currency Value calculation):</label><br>
-                    <input type="date" id="exchangeDate" class="form-control">
+                    <input type="date" id="exchangeRateDate" class="form-control" onchange="validateDate()">
+                    <button class="btn btn-primary" onclick="clearDateField()"><i class="fas fa-times"></i></button>
                 </div>
-                <ul id="silverList" class="list-group"></ul>
+                <small class="text-muted">Leave empty for the latest exchange rate. <span  class="text-danger"> ℹ️ Please select a date between last 365 days to latest only.</span></small>
+                <div id="dateError" class="text-danger mt-2"></div> <!-- Error message will appear here -->
             </div>
         </div>
-        
+            
         <!-- Main Currency Selection -->
-        <div class="form-group">
-            <label for="mainCurrency">Main Currency for Zakat Calculation:</label>
-            <select class="form-control" id="mainCurrency">
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="SAR">SAR</option>
-                <option value="EGP">EGP</option>
-                <option value="BDT">BDT</option>
-                <option value="INR">INR</option>
-                <option value="PKR">PKR</option>
-                <option value="IDR">IDR</option>
-                <option value="TRY">TRY</option>
-            </select>
+        <div class="card mb-3">
+            <div class="card-header text-center"><i class="fas fa-money-bill-wave"></i> Select Main Currency</div>
+            <div class="card-body">
+                <div class="input-group">
+                    <select class="form-control" id="mainCurrency">
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="SAR">SAR - Saudi Riyal</option>
+                        <option value="EGP">EGP - Egyptian Pound</option>
+                        <option value="BDT">BDT - Bangladeshi Taka</option>
+                        <option value="INR">INR - Indian Rupee</option>
+                        <option value="PKR">PKR - Pakistani Rupee</option>
+                        <option value="IDR">IDR - Indonesian Rupiah</option>
+                        <option value="TRY">TRY - Turkish Lira</option>
+                    </select>
+                </div>
+                <small class="text-muted">Exchange rate are using API from <a href="https://github.com/fawazahmed0/exchange-api">exchange-api
+                </a></small>
+            </div>
         </div>
-
+       
         <!-- Calculate Zakat Button -->
         <button class="btn btn-success w-100 mt-3" onclick="calculateZakat()"><i class="fas fa-calculator"></i> Calculate Zakat</button>
         
+        <!-- Error Message Container -->
+        <div id="calculationError" class="text-danger mt-2 text-center"></div>
+
         <!-- Result Section -->
         <div id="result" class="mt-3"></div>
 

@@ -11,6 +11,8 @@ A modern and user-friendly **Zakat Calculator** that helps users accurately calc
 ✅ **Dynamic List Entries** – Add, edit, and delete cash, gold, and silver entries easily  
 ✅ **Modern UI Design** – Styled with Bootstrap and FontAwesome icons for better visualization  
 ✅ **Report Print Support** – Allows users to print the complete Zakat summary  
+✅ **Error Handling** – Displays error messages under the **Calculate Zakat** button for invalid or missing inputs  
+✅ **Date Formatting** – Displays dates in a user-friendly format (`DD-MMM-YYYY`)  
 
 ### 📌 How It Works
 
@@ -19,8 +21,11 @@ A modern and user-friendly **Zakat Calculator** that helps users accurately calc
 3. **Calculate Zakat** – Click **Calculate** to determine your Zakat based on Islamic principles.  
 4. **Print Report** – Save or print your Zakat summary for records.  
 
-This tool ensures accurate Zakat calculations while giving users the flexibility to check past exchange rates for better financial planning.  
+### 🚀 Recent Updates
+
+- **Error Handling**: Added an error message under the **Calculate Zakat** button to alert users when no assets, gold, or silver are added.  
+- **Date Formatting**: Improved date display in the result section to show dates in `DD-MMM-YYYY` format (e.g., `01-Mar-2023`).  
 
 ---
-  
-🔹 *Built with 💙 for the community.*  
+
+🔹 *Built with 💙 for the community.*
