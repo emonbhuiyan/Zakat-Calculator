@@ -4,10 +4,18 @@ let silverItems = [];
 const API_KEY = "67ca1d11b03dff9c3d66179a"; // Your ExchangeRate-API Key
 
 async function getExchangeRate(base, target) {
+    let date = document.getElementById("exchangeDate").value; // Get selected date
+    let url = `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${base}`;
+
+    if (date) {
+        let formattedDate = date.replace(/-/g, ''); // Format YYYYMMDD if needed
+        url = `https://v6.exchangerate-api.com/v6/${API_KEY}/history/${base}/${formattedDate}`;
+    }
+
     try {
-        const response = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${base}`);
+        const response = await fetch(url);
         const data = await response.json();
-        return data.conversion_rates[target] || 1; // Fallback in case target currency is not found
+        return data.conversion_rates[target] || 1; // Use fallback if unavailable
     } catch (error) {
         console.error("Exchange rate API error:", error);
         return 1; // Fallback in case of API failure
@@ -131,7 +139,6 @@ async function calculateZakat() {
     `;
 }
 
-
 function resetForm() {
     assets = [];
     goldItems = [];
@@ -142,11 +149,9 @@ function resetForm() {
     document.getElementById("result").innerHTML = "";
 }
 
-
 function printFullPage() {
     window.print();
 }
-
 
 function printResult() {
     let printContent = document.getElementById("result").innerHTML;
