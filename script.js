@@ -256,7 +256,7 @@ async function calculateZakat() {
 
     // Get the error message container
     const errorMessage = document.getElementById("calculationError");
-    
+
     // Validate input data
     if (assets.length === 0 && goldItems.length === 0 && silverItems.length === 0) {
         errorMessage.innerHTML = `<div class="alert alert-danger">⚠️ Please add at least one asset, gold, or silver to calculate Zakat.</div>`;
@@ -323,11 +323,14 @@ async function calculateZakat() {
             <p><i class="fas fa-money-bill-wave"></i> Cash Zakat 2.5%: <strong>${totalZakatCash.toFixed(2)} ${mainCurrency}</strong></p>
             <div class="alert alert-primary mt-3">
                 <p><i class="fas fa-balance-scale"></i> Total Pure Gold Weight: <strong>${totalPureGoldWeight.toFixed(2)}g</strong></p>
-                <p><i class="fas fa-gem"></i> Zakatable Gold Weight: <strong>${totalZakatableGoldWeight.toFixed(2)}g</strong></p>
+                <p><i class="fas fa-gem"></i> Zakatable Gold Weight 2.5%: <strong>${totalZakatableGoldWeight.toFixed(2)}g</strong></p>
             </div>
             <div class="alert alert-secondary mt-3">
                 <p><i class="fas fa-balance-scale-right"></i> Total Silver Weight: <strong>${totalSilverWeight.toFixed(2)}g</strong></p>
-                <p><i class="fas fa-coins"></i> Zakatable Silver Weight: <strong>${totalZakatableSilverWeight.toFixed(2)}g</strong></p>
+                <p><i class="fas fa-coins"></i> Zakatable Silver Weight 2.5%: <strong>${totalZakatableSilverWeight.toFixed(2)}g</strong></p>
+            </div>
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> <strong>Important:</strong> Please check the latest gold and silver prices from the market before finalizing your Zakat calculation.
             </div>
         </div>
     `;
